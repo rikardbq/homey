@@ -1,0 +1,20 @@
+.vscode/
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Fresh build directory
+_fresh/
+# npm + other dependencies
+node_modules/
+deno_modules/
+vendor/
+
+# exec
+exec/
+home-screen.exe
+WebView2Loader.dll
