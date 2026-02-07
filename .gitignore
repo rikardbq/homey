@@ -14,5 +14,5 @@ vendor/
 
 # exec
 exec/
-home-screen.exe
+homey.exe
 WebView2Loader.dll

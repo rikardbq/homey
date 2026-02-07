@@ -9,7 +9,7 @@ const worker = new Worker(
 );
 
 const webview = new Webview();
-webview.navigate(`http://localhost:${Deno.env.get("PORT")}`);
+webview.navigate(`http://localhost:${Deno.env.get("PORT") || 8000}`);
 webview.run();
 worker.terminate();
 
