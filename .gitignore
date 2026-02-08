@@ -12,7 +12,9 @@ node_modules/
 deno_modules/
 vendor/
 
-# exec
+# extra
+# cef-webview/**
+build/
 exec/
 homey.exe
 WebView2Loader.dll
