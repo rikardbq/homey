@@ -10,7 +10,9 @@
         "add": "deno task local_modules deno add",
         "install": "deno task local_modules deno install",
         "bundle": "deno bundle --minify --outdir _fresh webview.ts",
-        "compile": "deno task build && deno task bundle && deno compile --no-terminal --output homey --include _fresh -A _fresh/webview.js"
+        "compile": "deno task build && deno task bundle && deno compile --no-terminal --output homey --include _fresh -A _fresh/webview.js",
+        "compile:cef": "deno task build && deno task bundle && deno compile --no-terminal --output dist/homey --include _fresh -A _fresh/webview.js",
+        "compile:final": "deno task compile:cef && cp -r cef-webview/ dist/"
     },
     "lint": {
         "rules": {

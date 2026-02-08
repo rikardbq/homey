@@ -13,7 +13,8 @@ deno_modules/
 vendor/
 
 # extra
-# cef-webview/**
+cef-webview/
+dist/
 build/
 exec/
 homey.exe
