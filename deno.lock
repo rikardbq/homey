@@ -31,7 +31,9 @@
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/semver@^1.0.6": "1.0.8",
     "jsr:@std/uuid@^1.0.9": "1.1.0",
+    "jsr:@webui/deno-webui@^2.5.13": "2.5.13",
     "jsr:@webview/webview@0.9": "0.9.0",
+    "jsr:@zip-js/zip-js@^2.8.7": "2.8.17",
     "npm:@babel/core@^7.28.0": "7.29.0",
     "npm:@babel/preset-react@^7.27.1": "7.28.5_@babel+core@7.29.0",
     "npm:@mjackson/node-fetch-server@0.7": "0.7.0",
@@ -46,6 +48,7 @@
     "npm:preact-render-to-string@^6.6.3": "6.6.5_preact@10.28.3",
     "npm:preact@^10.27.0": "10.28.3",
     "npm:preact@^10.27.2": "10.28.3",
+    "npm:preact@^10.28.3": "10.28.3",
     "npm:rollup@^4.50.0": "4.57.1",
     "npm:tailwindcss@^4.1.10": "4.1.18",
     "npm:vite@^7.1.3": "7.3.1_picomatch@4.0.3",
@@ -177,11 +180,22 @@
         "jsr:@std/bytes"
       ]
     },
+    "@webui/deno-webui@2.5.13": {
+      "integrity": "6f03345e19b943177766a30ed728a0e16c228757b5469bceee6092a7e18a25f9",
+      "dependencies": [
+        "jsr:@std/fs@^1.0.19",
+        "jsr:@std/path@^1.1.2",
+        "jsr:@zip-js/zip-js"
+      ]
+    },
     "@webview/webview@0.9.0": {
       "integrity": "a7c4d787aafa43258ff287f71a16679d5ca3d9b65e5d232c60c3985f9ab3e0ce",
       "dependencies": [
         "jsr:@denosaurs/plug"
       ]
+    },
+    "@zip-js/zip-js@2.8.17": {
+      "integrity": "ed05ac9c883df88f00e679fe4f819fe53675a5409e38c9b78cd037e490edade4"
     }
   },
   "npm": {
@@ -1450,10 +1464,11 @@
       "jsr:@fresh/plugin-vite@^1.0.8",
       "jsr:@std/fs@^1.0.22",
       "jsr:@std/path@^1.1.4",
+      "jsr:@webui/deno-webui@^2.5.13",
       "jsr:@webview/webview@0.9",
       "npm:@preact/signals@^2.5.0",
       "npm:@tailwindcss/vite@^4.1.12",
-      "npm:preact@^10.27.2",
+      "npm:preact@^10.28.3",
       "npm:tailwindcss@^4.1.10",
       "npm:vite@^7.1.3"
     ]
