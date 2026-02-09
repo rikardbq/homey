@@ -1,14 +1,12 @@
-use std::{fs, path::PathBuf};
-
 use winit::{
     application::ApplicationHandler,
     event::WindowEvent,
     event_loop::ActiveEventLoop,
     window::{Fullscreen, Window, WindowId},
 };
-use wry::{WebViewBuilder, http::Request};
+use wry::WebViewBuilder;
 
-use crate::application::ipc_handlers::IPCHandlers;
+use crate::application::ipc_handlers::IPCHandler;
 
 #[derive(Default)]
 pub struct App {
@@ -18,29 +16,18 @@ pub struct App {
 
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("assets")
-            .join("index.html");
-        if let Ok(html) = fs::read_to_string(path) {
-            let fullscreen = Some(Fullscreen::Borderless(None));
-            let win_attr = Window::default_attributes().with_fullscreen(fullscreen);
-            let window = event_loop.create_window(win_attr).unwrap();
-            let ipc_handler = IPCHandlers::new(window.id());
-            let webview = WebViewBuilder::new()
-                .with_ipc_handler(ipc_handler.read_file)
-                .with_ipc_handler(|_req| {
-                    print!("ASDDDDD");
-                })
-                .with_html(html)
-                // .with_url("./index.html")
-                .build(&window)
-                .unwrap();
+        let fullscreen = Some(Fullscreen::Borderless(None));
+        let win_attr = Window::default_attributes().with_fullscreen(fullscreen);
+        let window = event_loop.create_window(win_attr).unwrap();
+        let ipc_handler = IPCHandler::new(window.id());
+        let webview = WebViewBuilder::new()
+            .with_ipc_handler(ipc_handler.handlers)
+            .with_url("http://localhost:8000")
+            .build(&window)
+            .unwrap();
 
-            self.window = Some(window);
-            self.webview = Some(webview);
-        } else {
-            panic!("UI Entry missing!")
-        }
+        self.window = Some(window);
+        self.webview = Some(webview);
     }
 
     fn window_event(

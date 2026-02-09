@@ -1,16 +1,20 @@
 use winit::window::WindowId;
 use wry::http::Request;
 
-pub struct IPCHandlers {
+// i may not need..
+pub struct IPCHandler {
     pub id: WindowId,
-    pub read_file: fn(Request<String>),
+    pub handlers: fn(Request<String>),
 }
 
-impl IPCHandlers {
+impl IPCHandler {
     pub fn new(id: WindowId) -> Self {
-        IPCHandlers {
+        IPCHandler {
             id,
-            read_file: |req| print!("{}", req.body()),
+            handlers: |req| {
+                // handle various things
+                print!("handling it! {}", req.body());
+            },
         }
     }
 }
