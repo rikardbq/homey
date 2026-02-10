@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+mpsc = "0.2.6"
 winit = "0.30.12"
 wry = "0.54.1"
