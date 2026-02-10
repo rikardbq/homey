@@ -12,3 +12,10 @@
         - Some homebrewed format to support website/local app linkage
             - Need to add some way to open dialog box to manually find apps on the system so that the homebrewed format could work seamlessly and without hand written links
 - If I feel like this even becomes useful I will add some simple installer to streamline the installation and usage
+
+### Ideas for the future
+
+- add macro "decorators" for "api-controller" functions
+    - I.e, GET PUT POST DELETE type stuff
+    - make a server builder struct to better manage bootstrapping etc
+    - 
