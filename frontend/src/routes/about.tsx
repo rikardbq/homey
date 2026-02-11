@@ -4,7 +4,7 @@ import "../app.css";
 import { useEffect, useRef, useState } from "react";
 import { GAMEPAD_AXIS, GAMEPAD_BUTTONS } from "../util/gamepad";
 import { useDebounce } from "../hooks/useDebounce";
-import { useLimitRate } from "../hooks/useLimitRate";
+import { useRateLimit } from "../hooks/useRateLimit";
 import type { Gamepads } from "../hooks/useGamepad";
 
 type ListItemProps = {
@@ -92,7 +92,7 @@ type Props = {
 
 export default ({ gamepads }: Props) => {
     const debounce = useDebounce();
-    const limitRate = useLimitRate();
+    const limitRate = useRateLimit();
     const gamepad = gamepads[0];
     const [items, setItems] = useState(testItems);
     const [currentFocus, setCurrentFocus] = useState(0);
