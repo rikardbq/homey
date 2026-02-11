@@ -3,10 +3,18 @@ import { Link } from "react-router";
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "../app.css";
+import { useEffect } from "react";
+import type { Gamepads } from "../hooks/useGamepad";
 
-export default () => {
+type HomeProps = {
+    gamepads: Gamepads;
+}
+
+export default ({gamepads}: HomeProps) => {
+
     return (
         <div>
+            <p>{`pressed : ${gamepads[0]?.buttons[0].pressed}`}</p>
             <div>
                 <a href="https://vite.dev" target="_blank">
                     <img src={viteLogo} className="logo" alt="Vite logo" />
