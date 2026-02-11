@@ -1,18 +1,10 @@
 import { Link } from "react-router";
 
 import "../app.css";
-import { useEffect, useRef, useState } from "react";
-import { GAMEPAD_AXIS, GAMEPAD_BUTTONS } from "../util/gamepad";
-import { useDebounce } from "../hooks/useDebounce";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { GAMEPAD_BUTTONS } from "../util/gamepad";
 import { useRateLimit } from "../hooks/useRateLimit";
 import type { Gamepads } from "../hooks/useGamepad";
-
-type ListItemProps = {
-    id: string;
-    name: string;
-    description?: string;
-    focused: boolean;
-};
 
 const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
     return (
@@ -74,26 +66,13 @@ const keyDownHandler =
         console.log(ev.code);
     };
 
-const handleXNav =
-    (currFocus: number, setFocused: Function, items: any[]) =>
-    (isButtonPressed: Function, moveX: number) => {
-        if (isButtonPressed(GAMEPAD_BUTTONS.DPAD_LEFT) || moveX < -0.1) {
-            if (currFocus === 0) return;
-            else setFocused(currFocus - 1);
-        } else if (isButtonPressed(GAMEPAD_BUTTONS.DPAD_RIGHT) || moveX > 0.1) {
-            if (currFocus === items.length - 1) return;
-            else setFocused(currFocus + 1);
-        }
-    };
-
 type Props = {
     gamepads: Gamepads;
 };
 
 export default ({ gamepads }: Props) => {
-    const debounce = useDebounce();
     const limitRate = useRateLimit();
-    const gamepad = gamepads[0];
+    const gamepad = useMemo(() => gamepads[0], [gamepads]);
     const [items, setItems] = useState(testItems);
     const [currentFocus, setCurrentFocus] = useState(0);
     const setFocused = (idx: number) => {
@@ -124,8 +103,6 @@ export default ({ gamepads }: Props) => {
 
     if (gamepad) {
         if (gamepad.buttons[GAMEPAD_BUTTONS.DPAD_LEFT].pressed) {
-            // console.log(gamepad.buttons[GAMEPAD_BUTTONS.DPAD_LEFT]);
-
             if (currentFocus !== 0) {
                 limitRate(() => setFocused(currentFocus - 1), 100);
             }
@@ -142,7 +119,9 @@ export default ({ gamepads }: Props) => {
                 <ul
                     style={{
                         display: "flex",
-                        flexDirection: "row",
+                        flexDirection: gamepad?.buttons[0]?.pressed
+                            ? "column"
+                            : "row",
                         gap: "5px",
                     }}
                 >
