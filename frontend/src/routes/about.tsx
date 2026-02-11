@@ -1,14 +1,11 @@
 import { Link } from "react-router";
 
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
 import "../app.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useGamepad } from "react-gamepad-tl";
+import { useEffect, useRef, useState } from "react";
 import { GAMEPAD_AXIS, GAMEPAD_BUTTONS } from "../util/gamepad";
 import { useDebounce } from "../hooks/useDebounce";
-import type { Gamepads } from "../hooks/useGamepad";
 import { useLimitRate } from "../hooks/useLimitRate";
+import type { Gamepads } from "../hooks/useGamepad";
 
 type ListItemProps = {
     id: string;
@@ -128,7 +125,7 @@ export default ({ gamepads }: Props) => {
     if (gamepad) {
         if (gamepad.buttons[GAMEPAD_BUTTONS.DPAD_LEFT].pressed) {
             // console.log(gamepad.buttons[GAMEPAD_BUTTONS.DPAD_LEFT]);
-            
+
             if (currentFocus !== 0) {
                 limitRate(() => setFocused(currentFocus - 1), 100);
             }
