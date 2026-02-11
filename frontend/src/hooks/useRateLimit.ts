@@ -7,7 +7,7 @@ export const useRateLimit = () => {
         clearTimeout(executeTimer.current);
         executeTimer.current = setTimeout(() => {
             clearTimeout(timer.current);
-        }, 0);
+        }, time);
 
         timer.current = setTimeout(() => {
             cb();

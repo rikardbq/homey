@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "../app.css";
-import { useEffect } from "react";
 import type { Gamepads } from "../hooks/useGamepad";
 
 type HomeProps = {

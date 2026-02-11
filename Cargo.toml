@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+actix-files = "0.6.10"
+actix-web = "4.12.1"
 mpsc = "0.2.6"
+tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread"] }
 winit = "0.30.12"
 wry = "0.54.1"
