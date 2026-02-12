@@ -15,7 +15,4 @@
 
 ### Ideas for the future
 
-- add macro "decorators" for "api-controller" functions
-    - I.e, GET PUT POST DELETE type stuff
-    - make a server builder struct to better manage bootstrapping etc
-    - 
+- specify component tree to render from to better and more explicitly set navigable items to make gamepad work smoother
