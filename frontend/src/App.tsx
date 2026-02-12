@@ -10,7 +10,7 @@ export default () => {
         <Routes>
             <Route path="/" element={<Home gamepads={gamepads} />} />
             <Route path="/about" element={<About gamepads={gamepads} />} />
-            <Route path="/testing_home" element={<TestingHome />} />
+            <Route path="/testing_home" element={<TestingHome gamepads={gamepads} />} />
         </Routes>
     );
 };

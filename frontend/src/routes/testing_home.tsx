@@ -1,10 +1,59 @@
 import { View } from "../components/container/view";
 import marioPoster from "../assets/mario-movie-poster.jpg";
+import type { Gamepads } from "../hooks/useGamepad";
+import { useMemo, useState } from "react";
+import { useRateLimit } from "../hooks/useRateLimit";
+import { GAMEPAD_BUTTONS } from "../util/gamepad";
 
 const arr = new Array(10).fill(0);
 console.log(arr.length);
 
-export default () => {
+type Props = {
+    gamepads: Gamepads;
+};
+
+export default ({ gamepads }: Props) => {
+    const [gamepad1, ..._] = useMemo(() => gamepads, [gamepads]);
+    const limitRate = useRateLimit();
+    const [focused, setFocused] = useState(arr.map((_, i) => i === 0));
+    const [currentFocus, setCurrentFocus] = useState(focused.indexOf(true));
+
+    if (gamepad1) {
+        if (gamepad1.buttons[GAMEPAD_BUTTONS.DPAD_LEFT].pressed) {
+            if (focused.indexOf(true) !== 0) {
+                const nextFocus = focused.indexOf(true) - 1;
+                limitRate(
+                    () =>
+                        setFocused(() => {
+                            document
+                                .getElementById(`${nextFocus}`)
+                                ?.scrollIntoView({
+                                    behavior: "smooth",
+                                });
+                            return focused.map((_, i) => i === nextFocus);
+                        }),
+                    100,
+                );
+            }
+        } else if (gamepad1.buttons[GAMEPAD_BUTTONS.DPAD_RIGHT].pressed) {
+            if (focused.indexOf(true) !== arr.length - 1) {
+                const nextFocus = focused.indexOf(true) + 1;
+                limitRate(
+                    () =>
+                        setFocused(() => {
+                            document
+                                .getElementById(`${nextFocus}`)
+                                ?.scrollIntoView({
+                                    behavior: "smooth",
+                                });
+                            return focused.map((_, i) => i === nextFocus);
+                        }),
+                    100,
+                );
+            }
+        }
+    }
+
     return (
         <>
             <div className="dropdown mb-24">
@@ -67,7 +116,8 @@ export default () => {
                     {arr.map((x, i) => (
                         <div
                             key={i}
-                            className={`transition-all duration-150 shadow-md min-w-64 min-h-64 max-w-64 max-h-64 hover:border-primary border-2 border-transparent rounded-lg hover:min-w-80 hover:min-h-80 hover:rounded-xl hover:shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] hover:shadow-primary overflow-clip`}
+                            id={`${i}`}
+                            className={`transition-all duration-150 max-w-64 max-h-64 overflow-clip border-2 ${focused[i] ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
                         >
                             <img className="" src={marioPoster} />
                         </div>
