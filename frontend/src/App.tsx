@@ -5,12 +5,12 @@ import TestingHome from "./routes/testing_home";
 import { useGamepad } from "./hooks/useGamepad";
 
 export default () => {
-    const gamepads = useGamepad({ pollRate: 16 });
+    const gamepadUtils = useGamepad({ pollRate: 16 });
     return (
         <Routes>
-            <Route path="/" element={<Home gamepads={gamepads} />} />
-            <Route path="/about" element={<About gamepads={gamepads} />} />
-            <Route path="/testing_home" element={<TestingHome gamepads={gamepads} />} />
+            <Route path="/" element={<Home gamepadUtils={gamepadUtils} />} />
+            <Route path="/about" element={<About gamepadUtils={gamepadUtils} />} />
+            <Route path="/testing_home" element={<TestingHome gamepadUtils={gamepadUtils} />} />
         </Routes>
     );
 };
