@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // UTILITY
 export const GAMEPAD_BUTTONS = {
@@ -12,8 +12,6 @@ export const GAMEPAD_BUTTONS = {
     DPAD_RIGHT: 15,
 };
 
-type GamepadButtons = typeof GAMEPAD_BUTTONS;
-
 export const GAMEPAD_AXES = {
     LEFT_STICK: {
         X_AXIS: 0,
@@ -25,6 +23,7 @@ export const GAMEPAD_AXES = {
     },
 };
 
+type GamepadButtons = typeof GAMEPAD_BUTTONS;
 type GamepadAxes = typeof GAMEPAD_AXES;
 type XDirections = "left" | "right";
 type YDirections = "up" | "down";
@@ -51,6 +50,11 @@ const moveY =
 // UTILITY END
 
 type Gamepads = (Gamepad | null)[];
+interface GamepadUtilsOptions {
+    pollRate?: number;
+    stickDeadZone?: number;
+}
+
 export interface GamepadUtils {
     gamepads: Gamepads;
     isButtonPressed: (
@@ -68,16 +72,11 @@ export interface GamepadUtils {
         direction: YDirections,
     ) => boolean | undefined;
 }
-interface GamepadsOptions {
-    pollRate?: number;
-    stickDeadZone?: number;
-}
 
 export const useGamepad = ({
     pollRate = 100,
     stickDeadZone = 0.1,
-}: GamepadsOptions): GamepadUtils => {
-    const loopTimerRef = useRef(0);
+}: GamepadUtilsOptions): GamepadUtils => {
     const [gamepads, setGamepads] = useState<Gamepads>([]);
 
     const connectedHandler = useCallback((ev: GamepadEvent) => {
@@ -94,14 +93,14 @@ export const useGamepad = ({
         const gamepad = ev.gamepad;
         setGamepads(gamepads.filter((_x, idx) => idx === gamepad.index));
     }, []);
+
     useEffect(() => {
         const navigatorGamepads = navigator.getGamepads();
         if (navigatorGamepads.length === 0) {
-            clearTimeout(loopTimerRef.current);
             return;
         }
 
-        loopTimerRef.current = setTimeout(() => {
+        setTimeout(() => {
             setGamepads(navigatorGamepads);
         }, pollRate);
     });
