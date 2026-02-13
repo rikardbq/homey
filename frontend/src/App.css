@@ -5,6 +5,18 @@
   text-align: center;
 }
 
+@keyframes slide-in {
+  from {
+    background-color: green;
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+.tesst { 
+  animation: slide-in 5s forwards;
+}
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

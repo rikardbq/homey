@@ -3,14 +3,13 @@ import { Link } from "react-router";
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "../app.css";
-import type { Gamepads } from "../hooks/useGamepad";
+import type { GamepadUtils } from "../hooks/useGamepad";
 
 type HomeProps = {
-    gamepads: Gamepads;
-}
+    gamepadUtils: GamepadUtils;
+};
 
-export default ({gamepads}: HomeProps) => {
-
+export default ({ gamepadUtils: { gamepads } }: HomeProps) => {
     return (
         <div>
             <p>{`pressed : ${gamepads[0]?.buttons[0].pressed}`}</p>

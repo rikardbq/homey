@@ -4,7 +4,7 @@ import "../app.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GAMEPAD_BUTTONS } from "../util/gamepad";
 import { useRateLimit } from "../hooks/useRateLimit";
-import type { Gamepads } from "../hooks/useGamepad";
+import type { GamepadUtils } from "../hooks/useGamepad";
 
 const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
     return (
@@ -67,10 +67,10 @@ const keyDownHandler =
     };
 
 type Props = {
-    gamepads: Gamepads;
+    gamepadUtils: GamepadUtils;
 };
 
-export default ({ gamepads }: Props) => {
+export default ({ gamepadUtils: { gamepads } }: Props) => {
     const limitRate = useRateLimit();
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
     const [items, setItems] = useState(testItems);
