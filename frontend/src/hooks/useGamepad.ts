@@ -77,9 +77,6 @@ export const useGamepad = ({
     pollRate = 100,
     stickDeadZone = 0.1,
 }: GamepadsOptions): GamepadUtils => {
-    // const start = useRef(0);
-    // const gamepadsRef = useRef<Gamepads>([]);
-    // const [triggerRenderState, triggerRender] = useState(false);
     const loopTimerRef = useRef(0);
     const [gamepads, setGamepads] = useState<Gamepads>([]);
 
@@ -89,36 +86,14 @@ export const useGamepad = ({
 
         if (navigatorGamepads[evGamepad.index]) {
             console.debug(`GAMEPAD ${evGamepad.index} EXISTS, POPULATE LIST`);
-
-            // gamepadsRef.current = navigatorGamepads;
-            // triggerRender(!triggerRenderState);
             setGamepads(navigatorGamepads);
         }
-
-        // classic gameloop
-        // gamepadLoop();
     }, []);
 
     const disconnectedHandler = useCallback((ev: GamepadEvent) => {
         const gamepad = ev.gamepad;
         setGamepads(gamepads.filter((_x, idx) => idx === gamepad.index));
-
-        // classic gameloop
-        // delete gamepadsRef.current[gamepad.index];
-        // cancelAnimationFrame(start.current);
     }, []);
-    // const gamepadLoop = useCallback(() => {
-    //     // console.debug("START_OF=gamepadLoop");
-    //     if (gamepadsRef.current.length === 0) {
-    //         return;
-    //     }
-
-    //     setTimeout(() => {
-    //         start.current = requestAnimationFrame(gamepadLoop);
-    //     }, pollRate);
-    // }, []);
-
-    // alternative gamepad loop
     useEffect(() => {
         const navigatorGamepads = navigator.getGamepads();
         if (navigatorGamepads.length === 0) {
@@ -126,14 +101,7 @@ export const useGamepad = ({
             return;
         }
 
-        // if (isEqual(navigatorGamepads, gamepads)) {
-        //     clearTimeout(loopTimerRef.current);
-        //     // triggerRender(!triggerRenderState);
-        // } else {
-        // }
         loopTimerRef.current = setTimeout(() => {
-            // gamepadsRef.current = gamepads;
-            // triggerRender(!triggerRenderState);
             setGamepads(navigatorGamepads);
         }, pollRate);
     });
