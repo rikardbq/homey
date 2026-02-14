@@ -43,7 +43,7 @@ async fn main() {
     web_config.set_hostname(srv_host);
     web_config.set_port(srv_port.parse::<usize>().unwrap());
     app.set_web_config(web_config);
-    
+
     let cli_args: Vec<String> = env::args().collect();
     cli_args.iter().for_each(|x| match x.as_str() {
         "--kiosk" => {
