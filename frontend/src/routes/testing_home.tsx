@@ -1,7 +1,7 @@
 import { View } from "../components/container/view";
 import marioPoster from "../assets/mario-movie-poster.jpg";
 import type { GamepadUtils } from "../hooks/useGamepad";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRateLimit } from "../hooks/useRateLimit";
 import "../app.css";
 
@@ -22,7 +22,7 @@ export default ({
 
     if (gamepad1) {
         if (
-            isButtonPressed(gamepad1, "DPAD_LEFT") ||
+            isButtonPressed(gamepad1, "XBOX.DPAD_LEFT") ||
             moveX(gamepad1, "LEFT_STICK", "left")
         ) {
             if (focused.indexOf(true) !== 0) {
@@ -36,11 +36,11 @@ export default ({
                             });
                             return focused.map((_, i) => i === nextFocus);
                         }),
-                    100,
+                    150,
                 );
             }
         } else if (
-            isButtonPressed(gamepad1, "DPAD_RIGHT") ||
+            isButtonPressed(gamepad1, "XBOX.DPAD_RIGHT") ||
             moveX(gamepad1, "LEFT_STICK", "right")
         ) {
             if (focused.indexOf(true) !== arr.length - 1) {
@@ -54,7 +54,7 @@ export default ({
                             });
                             return focused.map((_, i) => i === nextFocus);
                         }),
-                    100,
+                    150,
                 );
             }
         }
