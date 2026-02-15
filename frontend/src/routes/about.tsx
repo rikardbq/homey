@@ -10,12 +10,12 @@ const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
     return (
         <li id={id} {...rest}>
             <div
-            className={`${focused ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
-                style={{
-                    width: "500px",
-                    height: "500px",
-                    border: focused ? "2px solid green" : "",
-                }}
+            className={`transition-all duration-150 ease-in-out min-w-40 min-h-40 ${focused ? "scale-125 border-primary rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md rounded-lg border-transparent"}`}
+                // style={{
+                //     width: "500px",
+                //     height: "500px",
+                //     border: focused ? "2px solid green" : "",
+                // }}
             >
                 {name}
             </div>
