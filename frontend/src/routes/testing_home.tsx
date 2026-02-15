@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default ({
-    gamepadUtils: { gamepads, isButtonPressed, moveX },
+    gamepadUtils: { gamepads, isButtonPressed, stick: { deadzone, moveX} },
 }: Props) => {
     const [gamepad1, ..._] = useMemo(() => gamepads, [gamepads]);
     const limitRate = useRateLimit();
@@ -23,7 +23,7 @@ export default ({
     if (gamepad1) {
         if (
             isButtonPressed(gamepad1, "XBOX.DPAD_LEFT") ||
-            moveX(gamepad1, "LEFT_STICK", "left")
+            moveX(gamepad1, "LEFT_STICK") < 0 - deadzone
         ) {
             if (focused.indexOf(true) !== 0) {
                 const nextFocus = focused.indexOf(true) - 1;
@@ -41,7 +41,7 @@ export default ({
             }
         } else if (
             isButtonPressed(gamepad1, "XBOX.DPAD_RIGHT") ||
-            moveX(gamepad1, "LEFT_STICK", "right")
+            moveX(gamepad1, "LEFT_STICK") > 0 + deadzone
         ) {
             if (focused.indexOf(true) !== arr.length - 1) {
                 const nextFocus = focused.indexOf(true) + 1;
@@ -68,7 +68,7 @@ export default ({
                         ref={focused.indexOf(true) === i ? itemRef : null}
                         key={i}
                         id={`${i}`}
-                        className={`transition-all duration-150 max-w-64 max-h-64 overflow-clip border-2 ${focused[i] ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
+                        className={`transition-all duration-75 ease-in-out max-w-64 max-h-64 overflow-clip border-2 ${focused[i] ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
                     >
                         <img className="" src={marioPoster} />
                     </div>

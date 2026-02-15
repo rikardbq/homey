@@ -10,6 +10,7 @@ const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
     return (
         <li id={id} {...rest}>
             <div
+            className={`${focused ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
                 style={{
                     width: "500px",
                     height: "500px",
@@ -70,7 +71,7 @@ type Props = {
     gamepadUtils: GamepadUtils;
 };
 
-export default ({ gamepadUtils: { gamepads } }: Props) => {
+export default ({ gamepadUtils: { gamepads, isButtonPressed, stick: { moveX, deadzone } } }: Props) => {
     const limitRate = useRateLimit();
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
     const [items, setItems] = useState(testItems);
@@ -102,11 +103,11 @@ export default ({ gamepadUtils: { gamepads } }: Props) => {
     }, [currentFocus]);
 
     if (gamepad) {
-        if (gamepad.buttons[GAMEPAD_BUTTONS.DPAD_LEFT].pressed) {
+        if (isButtonPressed(gamepad, "XBOX.DPAD_LEFT") || moveX(gamepad, "LEFT_STICK") < 0 - deadzone) {
             if (currentFocus !== 0) {
                 limitRate(() => setFocused(currentFocus - 1), 100);
             }
-        } else if (gamepad.buttons[GAMEPAD_BUTTONS.DPAD_RIGHT].pressed) {
+        } else if (isButtonPressed(gamepad, "XBOX.DPAD_RIGHT") || moveX(gamepad, "LEFT_STICK") > 0 + deadzone) {
             if (currentFocus !== items.length - 1) {
                 limitRate(() => setFocused(currentFocus + 1), 100);
             }
