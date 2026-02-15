@@ -1,7 +1,7 @@
 import { View } from "../components/container/view";
 import marioPoster from "../assets/mario-movie-poster.jpg";
 import type { GamepadUtils } from "../hooks/useGamepad";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRateLimit } from "../hooks/useRateLimit";
 import "../app.css";
 
@@ -13,49 +13,71 @@ type Props = {
 };
 
 export default ({
-    gamepadUtils: { gamepads, isButtonPressed, stick: { deadzone, moveX} },
+    gamepadUtils: {
+        gamepads,
+        isButtonPressed,
+        stick: { deadzone, moveX },
+    },
 }: Props) => {
     const [gamepad1, ..._] = useMemo(() => gamepads, [gamepads]);
     const limitRate = useRateLimit();
     const [focused, setFocused] = useState(arr.map((_, i) => i === 0));
     const itemRef = useRef(null);
+    const nextFocusRef = useRef(0);
+    const navx = useCallback(
+        () =>
+            setFocused(() => {
+                const elementRef = itemRef.current! as HTMLElement;
+                elementRef.scrollIntoView({
+                    behavior: "smooth",
+                });
+                return focused.map((_, i) => i === nextFocusRef.current);
+            }),
+        [focused],
+    );
 
     if (gamepad1) {
+        // if (focused.indexOf(true) !== 0) {
+        //     onButtonPressed("XBOX.DPAD_LEFT", () => {
+        //         const nextFocus = focused.indexOf(true) - 1;
+        //         setFocused(() => {
+        //             const elementRef = itemRef.current! as HTMLElement;
+        //             elementRef.scrollIntoView({
+        //                 behavior: "smooth",
+        //             });
+        //             return focused.map((_, i) => i === nextFocus);
+        //         });
+        //     });
+        // }
+
+        // if (focused.indexOf(true) !== arr.length - 1) {
+        //     const nextFocus = focused.indexOf(true) + 1;
+        //     onButtonPressed("XBOX.DPAD_RIGHT", () => {
+        //         setFocused(() => {
+        //             const elementRef = itemRef.current! as HTMLElement;
+        //             elementRef.scrollIntoView({
+        //                 behavior: "smooth",
+        //             });
+        //             return focused.map((_, i) => i === nextFocus);
+        //         });
+        //     });
+        // }
+
         if (
             isButtonPressed(gamepad1, "XBOX.DPAD_LEFT") ||
             moveX(gamepad1, "LEFT_STICK") < 0 - deadzone
         ) {
             if (focused.indexOf(true) !== 0) {
-                const nextFocus = focused.indexOf(true) - 1;
-                limitRate(
-                    () =>
-                        setFocused(() => {
-                            const elementRef = itemRef.current! as HTMLElement;
-                            elementRef.scrollIntoView({
-                                behavior: "smooth",
-                            });
-                            return focused.map((_, i) => i === nextFocus);
-                        }),
-                    150,
-                );
+                nextFocusRef.current = focused.indexOf(true) - 1;
+                limitRate(navx, 100);
             }
         } else if (
             isButtonPressed(gamepad1, "XBOX.DPAD_RIGHT") ||
             moveX(gamepad1, "LEFT_STICK") > 0 + deadzone
         ) {
             if (focused.indexOf(true) !== arr.length - 1) {
-                const nextFocus = focused.indexOf(true) + 1;
-                limitRate(
-                    () =>
-                        setFocused(() => {
-                            const elementRef = itemRef.current! as HTMLElement;
-                            elementRef.scrollIntoView({
-                                behavior: "smooth",
-                            });
-                            return focused.map((_, i) => i === nextFocus);
-                        }),
-                    150,
-                );
+                nextFocusRef.current = focused.indexOf(true) + 1;
+                limitRate(navx, 100);
             }
         }
     }
@@ -68,7 +90,7 @@ export default ({
                         ref={focused.indexOf(true) === i ? itemRef : null}
                         key={i}
                         id={`${i}`}
-                        className={`transition-all duration-75 ease-in-out max-w-64 max-h-64 overflow-clip border-2 ${focused[i] ? "min-w-80 border-primary min-h-80 rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md min-w-64 min-h-64 rounded-lg border-transparent"}`}
+                        className={`transition-all duration-150 ease-in-out min-w-40 min-h-40 max-w-40 max-h-40 overflow-clip border-2 ${focused[i] ? "scale-125 border-primary rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md rounded-lg border-transparent"}`}
                     >
                         <img className="" src={marioPoster} />
                     </div>
