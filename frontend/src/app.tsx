@@ -5,7 +5,7 @@ import TestingHome from "./routes/testing_home";
 import { useGamepad } from "./hooks/useGamepad";
 
 export default () => {
-    const gamepadUtils = useGamepad({ pollRate: 16 });
+    const gamepadUtils = useGamepad({ pollRate: 16, stickDeadzone: 0.2 });
     return (
         <Routes>
             <Route path="/" element={<Home gamepadUtils={gamepadUtils} />} />
