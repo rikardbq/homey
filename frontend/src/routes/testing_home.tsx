@@ -31,6 +31,7 @@ export default ({
                 elementRef.scrollIntoView({
                     behavior: "smooth",
                 });
+                
                 return focused.map((_, i) => i === nextFocusRef.current);
             }),
         [focused],
@@ -87,7 +88,7 @@ export default ({
             <div className="tesst flex flex-row items-end h-lvh gap-2">
                 {arr.map((_x, i) => (
                     <div
-                        ref={focused.indexOf(true) === i ? itemRef : null}
+                        ref={nextFocusRef.current === i ? itemRef : null}
                         key={i}
                         id={`${i}`}
                         className={`transition-all duration-150 ease-in-out min-w-40 min-h-40 max-w-40 max-h-40 overflow-clip border-2 ${focused[i] ? "scale-125 border-primary rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md rounded-lg border-transparent"}`}
