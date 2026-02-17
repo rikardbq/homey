@@ -3,6 +3,9 @@ pub mod application;
 pub const HOST: &str = "127.0.0.1";
 pub const PORT: &str = "8000";
 pub const ROOT_DIR: &str = "assets";
+// pub const WEBVIEW_LOADED_SCRIPT: &str = r#"
+//     window.ipc.postMessage("Webview loaded!");
+// "#;
 pub const KIOSK_SCRIPT: &str = r#"
     window.addEventListener("selectstart", (e) => {
         e.preventDefault();

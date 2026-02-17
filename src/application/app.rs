@@ -7,7 +7,7 @@ use winit::{
 };
 use wry::{WebView, WebViewBuilder};
 
-use crate::{HOST, PORT, ROOT_DIR, application::ipc_handlers::IPCHandler};
+use crate::{HOST, PORT, ROOT_DIR};
 
 pub struct WebConfig {
     hostname: String,
@@ -65,9 +65,9 @@ impl ApplicationHandler for App {
                 Icon::from_path(&format!("{ROOT_DIR}/testicon.ico"), None).unwrap(),
             ));
         let window = event_loop.create_window(win_attr).unwrap();
-        let ipc_handler = IPCHandler::new(window.id());
+        // let ipc_handler = IPCHandler::new(window.id());
         let mut webview_builder = WebViewBuilder::new()
-            .with_ipc_handler(ipc_handler.handlers)
+            // .with_ipc_handler(ipc_handler.handlers)
             .with_url(format!(
                 "http://{}:{}",
                 web_config.hostname, web_config.port
