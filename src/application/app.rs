@@ -46,7 +46,7 @@ impl App {
     pub fn set_window_attributes(&mut self, attributes: WindowAttributes) {
         self.window_attributes = Some(attributes);
     }
-    pub fn set_initialization_scrip(&mut self, script: &'static str) {
+    pub fn set_initialization_script(&mut self, script: &'static str) {
         self.initialization_script = Some(script);
     }
     pub fn set_web_config(&mut self, web_config: WebConfig) {
