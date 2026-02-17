@@ -2,7 +2,6 @@ import { Link } from "react-router";
 
 import "../app.css";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GAMEPAD_BUTTONS } from "../util/gamepad";
 import { useRateLimit } from "../hooks/useRateLimit";
 import type { GamepadUtils } from "../hooks/useGamepad";
 

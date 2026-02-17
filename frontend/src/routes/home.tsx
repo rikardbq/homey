@@ -36,6 +36,7 @@ export default ({ gamepadUtils: { gamepads } }: HomeProps) => {
             </button>
             <h1>Home</h1>
             <Link to="/about">About</Link>
+            <Link to="/testing_home">testing home</Link>
 
             <div className="dropdown mb-72">
                 <div tabIndex={0} role="button" className="btn m-1">
