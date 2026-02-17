@@ -56,7 +56,7 @@ async fn main() {
                     e.preventDefault();
                 });
             "#;
-            app.set_initialization_scrip(script);
+            app.set_initialization_script(script);
         }
         _ => (),
     });
