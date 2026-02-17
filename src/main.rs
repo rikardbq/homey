@@ -50,6 +50,14 @@ async fn main() {
             let fullscreen = Some(Fullscreen::Borderless(None));
             app.set_window_attributes(Window::default_attributes().with_fullscreen(fullscreen));
         }
+        "--no-context" => {
+            let script = r#"
+                window.addEventListener("contextmenu", function (e) {
+                    e.preventDefault();
+                });
+            "#;
+            app.set_initialization_scrip(script);
+        }
         _ => (),
     });
 
