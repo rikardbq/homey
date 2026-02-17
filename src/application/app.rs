@@ -7,11 +7,7 @@ use winit::{
 };
 use wry::{WebView, WebViewBuilder};
 
-use crate::application::ipc_handlers::IPCHandler;
-
-pub const HOST: &str = "127.0.0.1";
-pub const PORT: &str = "8000";
-pub const ROOT_DIR: &str = "assets";
+use crate::{HOST, PORT, ROOT_DIR, application::ipc_handlers::IPCHandler};
 
 pub struct WebConfig {
     hostname: String,

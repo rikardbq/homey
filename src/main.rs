@@ -1,4 +1,7 @@
-use homey::application::app::{App, HOST, PORT, ROOT_DIR, WebConfig};
+use homey::{
+    HOST, KIOSK_SCRIPT, PORT, ROOT_DIR,
+    application::app::{App, WebConfig},
+};
 use std::env;
 use std::path::PathBuf;
 
@@ -49,14 +52,7 @@ async fn main() {
         "--kiosk" => {
             let fullscreen = Some(Fullscreen::Borderless(None));
             app.set_window_attributes(Window::default_attributes().with_fullscreen(fullscreen));
-        }
-        "--no-context" => {
-            let script = r#"
-                window.addEventListener("contextmenu", function (e) {
-                    e.preventDefault();
-                });
-            "#;
-            app.set_initialization_script(script);
+            app.set_initialization_script(KIOSK_SCRIPT);
         }
         _ => (),
     });
