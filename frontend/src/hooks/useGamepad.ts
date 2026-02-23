@@ -57,12 +57,12 @@ const moveY = (gamepad: Gamepad, stick: keyof GamepadAxes) => {
 // UTILITY END
 
 type Gamepads = (Gamepad | null)[];
-interface GamepadUtilsOptions {
+type GamepadUtilsOptions = {
     pollRate?: number;
     stickDeadzone?: number;
-}
+};
 
-export interface GamepadUtils {
+export type GamepadUtils = {
     gamepads: Gamepads;
     isButtonPressed: (gamepad: Gamepad, button: GamepadButtons) => boolean;
     stick: {
@@ -70,7 +70,7 @@ export interface GamepadUtils {
         moveX: (gamepad: Gamepad, stick: keyof GamepadAxes) => number;
         moveY: (gamepad: Gamepad, stick: keyof GamepadAxes) => number;
     };
-}
+};
 
 export const useGamepad = ({
     pollRate = 100,
