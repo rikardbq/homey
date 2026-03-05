@@ -18,6 +18,114 @@
 - specify component tree to render from to better and more explicitly set navigable items to make gamepad work smoother
 
 
+### IPC CALL STUFF
+```rust
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize)]
+struct IpcRequest {
+    id: u64,
+    method: String,
+    params: serde_json::Value,
+}
+
+#[derive(Serialize)]
+struct IpcResponse {
+    id: u64,
+    result: serde_json::Value,
+}
+
+#[derive(Debug)]
+enum UserEvents {
+    ExecEval(String),
+}
+
+let event_loop: EventLoop<UserEvents> = EventLoop::with_user_event();
+let proxy = event_loop.create_proxy();
+
+let webview = WebViewBuilder::new(window)?
+    .with_ipc_handler(move |_window, req| {
+        let msg = req.body().to_string();
+
+        // Send message into winit event loop
+        proxy
+            .send_event(UserEvents::ExecEval(msg))
+            .expect("Failed to send event");
+    })
+    .build()?;
+
+event_loop.run(move |event, _, control_flow| {
+    *control_flow = ControlFlow::Wait;
+
+    match event {
+      Event::UserEvent(UserEvents::ExecEval(msg)) => {
+          let req: IpcRequest = serde_json::from_str(&msg).unwrap();
+
+          let result = match req.method.as_str() {
+              "list_files" => {
+                  let files: Vec<String> = std::fs::read_dir(".")
+                      .unwrap()
+                      .filter_map(|e| e.ok())
+                      .map(|e| e.file_name().to_string_lossy().to_string())
+                      .collect();
+
+                  serde_json::to_value(files).unwrap()
+              }
+              _ => serde_json::json!({"error": "unknown method"})
+          };
+
+          let response = IpcResponse {
+              id: req.id,
+              result,
+          };
+
+          let json = serde_json::to_string(&response).unwrap();
+
+          webview.evaluate_script(&format!(
+              "window.ipcResponseHandler({});",
+              json
+          )).unwrap();
+      },
+      _ => {}
+  }
+});
+```
+
+```javascript
+let requestId = 0;
+const pending = new Map();
+
+window.ipcResponseHandler = function (response) {
+  const { id, result } = response;
+
+  if (pending.has(id)) {
+    pending.get(id)(result);
+    pending.delete(id);
+  }
+};
+
+export const ipc = {
+  call(method, params = {}) {
+    return new Promise((resolve) => {
+      const id = requestId++;
+
+      pending.set(id, resolve);
+
+      window.ipc.postMessage(JSON.stringify({
+        id,
+        method,
+        params
+      }));
+    });
+  }
+};
+
+const files = await ipc.call("list_files");
+console.log(files);
+```
+
+
 ### Kiosk mode stuff
 
 ```javascript
