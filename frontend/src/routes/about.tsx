@@ -138,7 +138,7 @@ export default ({ gamepadUtils: { gamepads, isButtonPressed, stick: { moveX, dea
                     ))}
                 </ul>
             </div>
-            <h1>About</h1>
+            <h1>TEST</h1>
             <Link to="/">Home</Link>
         </>
     );

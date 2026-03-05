@@ -4,6 +4,7 @@ import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "../app.css";
 import type { GamepadUtils } from "../hooks/useGamepad";
+import { ipc } from "../util/IPC";
 
 type HomeProps = {
     gamepadUtils: GamepadUtils;
@@ -34,7 +35,12 @@ export default ({ gamepadUtils: { gamepads } }: HomeProps) => {
             <button className="theme-controller btn btn-secondary" value="mys">
                 Two
             </button>
-            <h1>Home</h1>
+            <button className="btn btn-error" onClick={async () => {
+                const list = await ipc.call("get_windows");
+                console.log(list);
+                
+            }}>TESTING THIS IPC</button>
+            <h1>TTTTTTTTTT</h1>
             <Link to="/about">About</Link>
             <Link to="/testing_home">testing home</Link>
 

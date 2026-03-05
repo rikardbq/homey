@@ -1,6 +1,6 @@
 use homey::{
     HOST, KIOSK_SCRIPT, PORT, ROOT_DIR,
-    application::app::{App, WebConfig},
+    application::app::{App, UserEvents, WebConfig},
 };
 use std::env;
 use std::path::PathBuf;
@@ -39,9 +39,11 @@ async fn main() {
         .run()
     });
 
-    let event_loop = EventLoop::new().unwrap();
     let mut app = App::default();
     let mut web_config = WebConfig::default();
+    let event_loop: EventLoop<UserEvents> = EventLoop::with_user_event().build().unwrap();
+    let proxy = event_loop.create_proxy();
+    app.set_event_loop_proxy(proxy);
 
     web_config.set_hostname(srv_host);
     web_config.set_port(srv_port.parse::<usize>().unwrap());
