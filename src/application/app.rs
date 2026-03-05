@@ -7,6 +7,7 @@ use winit::{
     window::{Icon, Window, WindowAttributes, WindowId},
 };
 use wry::{WebView, WebViewBuilder};
+// use x_win::get_open_windows;
 
 use crate::{HOST, IPC_HANDLER_INIT_SCRIPT, PORT, ROOT_DIR};
 
@@ -130,6 +131,12 @@ impl ApplicationHandler<UserEvents> for App {
 
                         serde_json::to_value(files).unwrap()
                     }
+                    // "get_windows" => {
+                    //     let open_windows = get_open_windows().expect("Error showing windows");
+                    //     let titles: Vec<String> = open_windows.iter().map(|x| x.title.clone()).collect();
+                    //     serde_json::to_value(titles).unwrap()
+                    
+                    // }
                     _ => serde_json::json!({"error": "unknown method"}),
                 };
 
