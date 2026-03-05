@@ -1,13 +1,32 @@
+use serde::{Deserialize, Serialize};
 use winit::{
     application::ApplicationHandler,
-    event::WindowEvent,
-    event_loop::ActiveEventLoop,
+    event::{WindowEvent},
+    event_loop::{ActiveEventLoop, EventLoopProxy},
     platform::windows::IconExtWindows,
     window::{Icon, Window, WindowAttributes, WindowId},
 };
 use wry::{WebView, WebViewBuilder};
 
-use crate::{HOST, PORT, ROOT_DIR};
+use crate::{HOST, IPC_HANDLER_INIT_SCRIPT, PORT, ROOT_DIR};
+
+#[derive(Deserialize)]
+struct IpcRequest {
+    id: u64,
+    method: String,
+    params: serde_json::Value,
+}
+
+#[derive(Serialize)]
+struct IpcResponse {
+    id: u64,
+    result: serde_json::Value,
+}
+
+#[derive(Debug)]
+pub enum UserEvents {
+    ExecEval(String),
+}
 
 pub struct WebConfig {
     hostname: String,
@@ -33,12 +52,16 @@ impl WebConfig {
 pub struct App {
     window: Option<Window>,
     webview: Option<WebView>,
+    event_loop_proxy: Option<EventLoopProxy<UserEvents>>,
     window_attributes: Option<WindowAttributes>,
     initialization_script: Option<&'static str>,
     web_config: Option<WebConfig>,
 }
 
 impl App {
+    pub fn set_event_loop_proxy(&mut self, proxy: EventLoopProxy<UserEvents>) {
+        self.event_loop_proxy = Some(proxy);
+    }
     pub fn set_window_attributes(&mut self, attributes: WindowAttributes) {
         self.window_attributes = Some(attributes);
     }
@@ -50,7 +73,7 @@ impl App {
     }
 }
 
-impl ApplicationHandler for App {
+impl ApplicationHandler<UserEvents> for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         let web_config = match &self.web_config {
             Some(conf) => conf,
@@ -65,13 +88,22 @@ impl ApplicationHandler for App {
                 Icon::from_path(&format!("{ROOT_DIR}/testicon.ico"), None).unwrap(),
             ));
         let window = event_loop.create_window(win_attr).unwrap();
-        // let ipc_handler = IPCHandler::new(window.id());
         let mut webview_builder = WebViewBuilder::new()
-            // .with_ipc_handler(ipc_handler.handlers)
             .with_url(format!(
                 "http://{}:{}",
                 web_config.hostname, web_config.port
-            ));
+            ))
+            .with_initialization_script(IPC_HANDLER_INIT_SCRIPT);
+
+        if let Some(proxy) = &self.event_loop_proxy {
+            let proxy = proxy.clone();
+            webview_builder = webview_builder.with_ipc_handler(move |req| {
+                let msg = req.body().to_string();
+                proxy
+                    .send_event(UserEvents::ExecEval(msg))
+                    .expect("Failed to send event");
+            })
+        }
 
         if let Some(script) = self.initialization_script {
             webview_builder = webview_builder.with_initialization_script(script);
@@ -81,6 +113,36 @@ impl ApplicationHandler for App {
 
         self.window = Some(window);
         self.webview = Some(webview);
+    }
+
+    fn user_event(&mut self, _event_loop: &ActiveEventLoop, event: UserEvents) {
+        match event {
+            UserEvents::ExecEval(msg) => {
+                let req: IpcRequest = serde_json::from_str(&msg).unwrap();
+
+                let result = match req.method.as_str() {
+                    "list_files" => {
+                        let files: Vec<String> = std::fs::read_dir(".")
+                            .unwrap()
+                            .filter_map(|e| e.ok())
+                            .map(|e| e.file_name().to_string_lossy().to_string())
+                            .collect();
+
+                        serde_json::to_value(files).unwrap()
+                    }
+                    _ => serde_json::json!({"error": "unknown method"}),
+                };
+
+                let response = IpcResponse { id: req.id, result };
+                let json = serde_json::to_string(&response).unwrap();
+
+                self.webview
+                    .as_ref()
+                    .unwrap()
+                    .evaluate_script(&format!("window.ipc_handler.responseHandler({});", json))
+                    .unwrap();
+            } // _ => ()
+        }
     }
 
     fn window_event(
