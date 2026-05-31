@@ -1,6 +1,9 @@
+// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use homey::{
     HOST, KIOSK_SCRIPT, PORT, ROOT_DIR,
-    application::app::{App, UserEvents, WebConfig},
+    application::{UserEvent, app::App},
+    get_or_default_env,
 };
 use std::env;
 use std::path::PathBuf;
@@ -11,10 +14,6 @@ use winit::{
     event_loop::EventLoop,
     window::{Fullscreen, Window},
 };
-
-fn get_or_default_env(env_var: &str, default: &str) -> String {
-    env::var(env_var).unwrap_or(default.to_string())
-}
 
 async fn index(_req: HttpRequest) -> actix_web::Result<NamedFile> {
     let path: PathBuf = format!("./{ROOT_DIR}/index.html").parse().unwrap();
@@ -34,21 +33,13 @@ async fn main() {
                 .route("/", web::get().to(index))
                 .service(Files::new("/", format!("./{srv_root}")))
         })
-        .bind(format!("{srv_host}:{srv_port}"))
+        .bind(format!("0.0.0.0:{srv_port}"))
         .unwrap()
         .run()
     });
 
-    let mut app = App::default();
-    let mut web_config = WebConfig::default();
-    let event_loop: EventLoop<UserEvents> = EventLoop::with_user_event().build().unwrap();
-    let proxy = event_loop.create_proxy();
-    app.set_event_loop_proxy(proxy);
-
-    web_config.set_hostname(srv_host);
-    web_config.set_port(srv_port.parse::<usize>().unwrap());
-    app.set_web_config(web_config);
-
+    let event_loop: EventLoop<UserEvent> = EventLoop::with_user_event().build().unwrap();
+    let mut app = App::new(srv_host, srv_port, &event_loop);
     let cli_args: Vec<String> = env::args().collect();
     cli_args.iter().for_each(|x| match x.as_str() {
         "--kiosk" => {
