@@ -1,10 +1,13 @@
-use std::{env, path::{Path, PathBuf}};
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
 
 pub mod application;
 
-pub const HOST: &str = "127.0.0.1";
-pub const PORT: &str = "8000";
-pub const ROOT_DIR: &str = "assets";
+pub const SRV_HOST: &str = "127.0.0.1";
+pub const SRV_PORT: &str = "8000";
+pub const SRV_ROOT_DIR: &str = "assets";
 // pub const WEBVIEW_LOADED_SCRIPT: &str = r#"
 //     window.ipc.postMessage("Webview loaded!");
 // "#;
@@ -235,7 +238,7 @@ pub fn get_or_default_env(env_var: &str, default: &str) -> String {
 
 pub fn get_application_root_dir() -> PathBuf {
     if cfg!(debug_assertions) {
-        return Path::new("./").to_path_buf()
+        return Path::new("./").to_path_buf();
     }
 
     let exec_path = env::current_exe().unwrap();

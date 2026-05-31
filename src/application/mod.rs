@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{HOST, PORT};
-
 pub mod app;
 
 #[derive(Deserialize)]

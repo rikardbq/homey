@@ -9,7 +9,7 @@ use wry::{WebView, WebViewBuilder};
 // use x_win::get_open_windows;
 
 use crate::{
-    IPC_HANDLER_INIT_SCRIPT, ROOT_DIR,
+    IPC_HANDLER_INIT_SCRIPT, SRV_ROOT_DIR,
     application::{IpcRequest, IpcResponse, UserEvent, WebConfig},
 };
 
@@ -54,7 +54,7 @@ impl ApplicationHandler<UserEvent> for App {
             .or(Some(Window::default_attributes()))
             .unwrap()
             .with_window_icon(Some(
-                Icon::from_path(&format!("{ROOT_DIR}/testicon.ico"), None).unwrap(),
+                Icon::from_path(&format!("{SRV_ROOT_DIR}/testicon.ico"), None).unwrap(),
             ));
         let window = event_loop.create_window(win_attr).unwrap();
         let mut webview_builder = WebViewBuilder::new()

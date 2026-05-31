@@ -1,12 +1,12 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use homey::{
-    HOST, KIOSK_SCRIPT, PORT, ROOT_DIR,
+    KIOSK_SCRIPT, SRV_HOST, SRV_PORT, SRV_ROOT_DIR,
     application::{UserEvent, app::App},
-    get_or_default_env,
+    get_application_root_dir, get_or_default_env,
 };
-use std::env;
 use std::path::PathBuf;
+use std::{env, path::Path};
 
 use actix_files::{Files, NamedFile};
 use actix_web::{HttpRequest, HttpServer, web};
@@ -16,22 +16,26 @@ use winit::{
 };
 
 async fn index(_req: HttpRequest) -> actix_web::Result<NamedFile> {
-    let path: PathBuf = format!("./{ROOT_DIR}/index.html").parse().unwrap();
+    let path: PathBuf =
+        get_application_root_dir().join(Path::new(&format!("{SRV_ROOT_DIR}/index.html")));
     Ok(NamedFile::open(path)?)
 }
 
 // #[actix_web::main]
 #[tokio::main]
 async fn main() {
-    let srv_host = get_or_default_env("SRV_HOST", HOST);
-    let srv_port = get_or_default_env("SRV_PORT", PORT);
-    let srv_root = get_or_default_env("SRV_ROOT", ROOT_DIR);
+    let srv_host = get_or_default_env("SRV_HOST", SRV_HOST);
+    let srv_port = get_or_default_env("SRV_PORT", SRV_PORT);
+    let srv_root = get_or_default_env("SRV_ROOT_DIR", SRV_ROOT_DIR);
 
     let web_srv = tokio::spawn({
         HttpServer::new(move || {
             actix_web::App::new()
                 .route("/", web::get().to(index))
-                .service(Files::new("/", format!("./{srv_root}")))
+                .service(Files::new(
+                    "/",
+                    get_application_root_dir().join(Path::new(&srv_root)),
+                ))
         })
         .bind(format!("0.0.0.0:{srv_port}"))
         .unwrap()
