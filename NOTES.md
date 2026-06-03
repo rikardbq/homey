@@ -15,7 +15,9 @@
 
 ### Ideas for the future
 
-- specify component tree to render from to better and more explicitly set navigable items to make gamepad work smoother
+- as a form of pre-processing step to the build, use AI to generate hero avatars for applications.
+    - app selection is either like a hero select screen from a fighting game or like a game main menu where each entry pops in a hero and some cool background scene to match the vibe.
+- specify "component tree" for more explicit navigation to make gamepad work smoother
 
 
 ### IPC CALL STUFF

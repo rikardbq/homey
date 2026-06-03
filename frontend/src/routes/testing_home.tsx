@@ -7,7 +7,6 @@ import "../app.css";
 import { Link } from "react-router";
 
 const arr = new Array(10).fill(0);
-console.log(arr.length);
 
 type Props = {
     gamepadUtils: GamepadUtils;

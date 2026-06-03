@@ -81,6 +81,9 @@ export const useGamepad = ({
     const connectedHandler = useCallback((ev: GamepadEvent) => {
         const evGamepad = ev.gamepad;
         const navigatorGamepads = navigator.getGamepads();
+        console.log("GAMEPAD CONNECTED: ", evGamepad);
+        console.log("GAMEPADS: ", navigatorGamepads);
+        
 
         if (navigatorGamepads[evGamepad.index]) {
             console.debug(`GAMEPAD ${evGamepad.index} CONNECTED`);
