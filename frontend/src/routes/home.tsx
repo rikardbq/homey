@@ -2,9 +2,9 @@ import { Link } from "react-router";
 
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
-import "../_app.css";
+import "../app.css";
 import type { GamepadUtils } from "../hooks/useGamepad";
-import { ipc } from "../util/_ipc";
+import { ipc } from "../util/ipc";
 import { useEffect, useState } from "react";
 
 type HomeProps = {
