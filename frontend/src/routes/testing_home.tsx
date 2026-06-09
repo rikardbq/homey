@@ -3,10 +3,11 @@ import marioPoster from "../assets/mario-movie-poster.jpg";
 import type { GamepadUtils } from "../hooks/useGamepad";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useRateLimit } from "../hooks/useRateLimit";
-import "../app.css";
+import "../_app.css";
 import { Link } from "react-router";
 
 const arr = new Array(10).fill(0);
+console.log(arr.length);
 
 type Props = {
     gamepadUtils: GamepadUtils;

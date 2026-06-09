@@ -1,3 +1,15 @@
+type IpcPostMessageKind = "DeviceDiscovered";
+type IpcPostMessage = {
+    kind: IpcPostMessageKind;
+    data: Record<string, any>;
+};
+type IpcMethod =
+    | "ListFiles"
+    | "DiscoverDevices"
+    | "ConnectToDevice"
+    | "DisconnectFromDevice"
+    | "RequestCastLocal"
+
 declare global {
     interface Window {
         ipc: {
@@ -12,7 +24,7 @@ declare global {
 }
 
 export const ipc = {
-    call(method: string, params = {}) {
+    call(method: IpcMethod, params = {}) {
         return new Promise((resolve) => {
             const id = window.ipc_handler.currRequestId++;
             window.ipc_handler.pendingRequests.set(id, resolve);
@@ -23,6 +35,11 @@ export const ipc = {
                     params,
                 }),
             );
+        });
+    },
+    listen(cb: (ipcMessage: IpcPostMessage) => void) {
+        window.addEventListener("message", ({ data }) => {
+            cb(data);
         });
     },
 };

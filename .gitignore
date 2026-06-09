@@ -5,6 +5,10 @@ frontend/dist/
 frontend/dist-ssr/
 target/
 assets/
+hls/
+dash/
+cache/
+ffmpeg*/
 !frontend/src/assets/
 
 # !.vscode/extensions.json

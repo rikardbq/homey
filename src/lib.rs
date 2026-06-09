@@ -1,3 +1,4 @@
+use base64::{Engine as _, engine::general_purpose::URL_SAFE};
 use std::{
     env,
     path::{Path, PathBuf},
@@ -5,9 +6,9 @@ use std::{
 
 pub mod application;
 
-pub const SRV_HOST: &str = "127.0.0.1";
-pub const SRV_PORT: &str = "8000";
-pub const SRV_ROOT_DIR: &str = "assets";
+pub const HOST: &str = "127.0.0.1";
+pub const PORT: &str = "8090";
+pub const ASSETS_ROOT_DIR: &str = "assets";
 // pub const WEBVIEW_LOADED_SCRIPT: &str = r#"
 //     window.ipc.postMessage("Webview loaded!");
 // "#;
@@ -243,4 +244,27 @@ pub fn get_application_root_dir() -> PathBuf {
 
     let exec_path = env::current_exe().unwrap();
     exec_path.parent().unwrap().to_path_buf()
+}
+
+enum B64Op {
+    Encode,
+    Decode,
+}
+
+pub struct B64;
+impl B64 {
+    fn get_text(input: &str, op: B64Op) -> String {
+        match op {
+            B64Op::Encode => URL_SAFE.encode(input),
+            B64Op::Decode => {
+                String::from_utf8(URL_SAFE.decode(input).expect("failed to decode input")).unwrap()
+            }
+        }
+    }
+    pub fn encode_str(input: &str) -> String {
+        Self::get_text(input, B64Op::Encode)
+    }
+    pub fn decode_str(input: &str) -> String {
+        Self::get_text(input, B64Op::Decode)
+    }
 }

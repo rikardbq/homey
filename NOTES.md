@@ -1,3 +1,185 @@
+### Glitch effect CSS
+```css
+/* tbd */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  height: 100vh;
+  width: 100%;
+  background: radial-gradient(#480d35, #17151d);
+  display: grid;
+  place-items: center;
+}
+h1 {
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  color: #f6d8d5;
+  font-size: 150px;
+}
+h1:hover {
+  text-shadow: 0.05em 0 0 #ec2225, -0.025em -0.05em 0 #313f97,
+    0.025em 0.05em 0 #50c878;
+    color: rgba(0, 194, 203, 0.2);
+}
+h1:before,
+h1:after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+}
+h1:hover::before {
+  animation: glitch 650ms infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translate(-0.025em, -0.0125em);
+}
+h1:hover::after {
+  animation: glitch 375ms infinite;
+  clip-path: polygon(0 65%, 100% 20%, 100% 100%, 15% 70%);
+  transform: translate(0.0125em, 0.025em);
+}
+@keyframes glitch {
+  0% {
+    color: rgba(236, 34, 37, 0.2);
+    text-shadow: 0.05em 0 0 #ec2225, -0.025em -0.05em 0 #313f97,
+      0.025em 0.05em 0 #50c878;
+  }
+  14% {
+    text-shadow: 0.05em 0 0 #ec2225, -0.025em -0.05em 0 #313f97,
+      0.025em 0.05em 0 #50c878;
+  }
+  15% {
+    color: #50c878;
+    text-shadow: -0.05em -0.025em 0 #ec2225, 0.025em -0.025em 0 #313f97,
+      -0.05em -0.05em 0 #50c878;
+  }
+  49% {
+    text-shadow: -0.05em -0.025em 0 #ec2225, 0.025em -0.025em 0 #313f97,
+      -0.05em -0.05em 0 #50c878;
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 #ec2225, -0.025em 0.05em 0 #313f97,
+      0 -0.05em 0 #50c878;
+  }
+  99% {
+    color: #313f97;
+    text-shadow: 0.025em 0.05em 0 #ec2225, -0.025em 0.05em 0 #313f97,
+      0 -0.05em 0 #50c878;
+  }
+  100% {
+    text-shadow: -0.025em 0 0 #ec2225, -0.025em -0.025em 0 #313f97,
+      -0.025em -0.05em 0 #50c878;
+  }
+}
+
+
+
+
+/* great for text based */
+@import url(https://fonts.googleapis.com/css?family=Abril+Fatface|Roboto:400,400italic,500,500italic);
+
+@-webkit-keyframes wiggle {
+    0% { -webkit-transform: skewX(24deg); } 
+    10% { -webkit-transform: skewX(-8deg); }
+    20% { 
+      -webkit-transform: skewX(55deg);
+      text-shadow:1px 1px rgba(246, 0, 153,0.8),
+             -1px -1px rgba(15, 210, 255,0.8),
+             -1px 0px rgba(255, 210, 0, 1);
+    }
+    30% { -webkit-transform: skewX(-90deg); }
+    40% { 
+      -webkit-transform: skewX(29deg);
+      filter: blur(1px);
+    }
+    50% { 
+      -webkit-transform: skewX(-90deg);
+      text-shadow:20px 7px rgba(255, 76, 76, 0.8),
+             -28px 0px rgba(54, 91, 255, 0.8),
+             22px -4px rgba(255, 210, 0, 1);
+    }
+    60% { -webkit-transform: skewX(3deg); }
+    70% { 
+      -webkit-transform: skewX(-2deg);
+      text-shadow:-4px 1px rgba(246, 0, 153,0.8),
+             2px -1px rgba(15, 210, 255,0.8),
+             -3px 0px rgba(255, 210, 0, 1);
+    }
+    80% { -webkit-transform: skewX(1deg); }
+    90% { -webkit-transform: skewX(10deg); }
+    100% { -webkit-transform: skewX(0deg); }
+}
+
+* {padding:0;margin:0;}
+
+html {width:100%;height:100%;}
+
+body { 
+  width:100%;
+  height:100%;
+  background:#111;
+  color:#fff;
+  font-family:'Roboto',sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+header {
+  display:flex;
+}
+
+header:hover {
+  -webkit-animation: wiggle 0.4s 3;
+}
+
+h1 {
+  position:relative;
+  font-family:sans-serif;
+  font-weight:normal;
+  font-size:1em;
+  text-align:center;
+  cursor:pointer;
+  color:rgba(255,255,255,0.95);
+}
+
+h1:hover {
+  -webkit-animation: wiggle 0.2s 2;
+
+}
+```
+
+### colors
+    - black #0A0A0A
+    - red #FF4444
+    - yellow #FFFF44
+    - glow effect on text `text-shadow: -1px -1px 19px #ff4, 1px -1px 9px #ff4, -1px 1px 0px #fff, 1px 1px 0px #fff;`
+
+### Notes to self (RUST)
+
+- TAURI
+    - tauri/cef-rs (may enable the possibility of running the Chrome-Web-sender-SDK)
+        - https://github.com/tauri-apps/cef-rs
+        - try something with embedded chrome
+
+- FFMPEG
+    - mp4:
+        - `ffmpeg -i .\Arcane.S02E01.Heavy.Is.the.Crown.1080p.NF.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mkv -vf "subtitles=Arcane.S02E01.Heavy.Is.the.Crown.1080p.NF.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mkv:si=30" -movflags frag_keyframe+empty_moov+faststart test.mkv`
+    - hls:
+        - `ffmpeg -i 5621903-hd_1920_1080_25fps.mp4 -vf subtitles=subs.srt -c:v h264 -c:a aac -hls_base_url /hls/ -f hls index.m3u8`
+    - dash:
+        - `ffmpeg -i .\5621903-hd_1920_1080_25fps.mp4 -c:v libx264 -c:a aac -vf subtitles=subs.srt -use_template 1 -use_timeline 1 -seg_duration 6 -base-url "/dash/" -f dash manifest.mpd`
+
+- https://github.com/futo-org/fcast/blob/master/sdk/sender/examples/desktop/src/main.rs
+- This will need to be implemented with "event_loop_proxy", will work in much the same way but will be handled inside of "src/application/app.rs"
+- The code from fcast-sender-sdk works with a ui event loop, this will do the same by event struct here is called UserEvents
+
 ### Notes to self (RUST)
 
 - frontend is a react + vite combo 

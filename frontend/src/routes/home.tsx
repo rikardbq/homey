@@ -2,17 +2,61 @@ import { Link } from "react-router";
 
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
-import "../app.css";
+import "../_app.css";
 import type { GamepadUtils } from "../hooks/useGamepad";
-import { ipc } from "../util/IPC";
+import { ipc } from "../util/_ipc";
+import { useEffect, useState } from "react";
 
 type HomeProps = {
     gamepadUtils: GamepadUtils;
 };
 
 export default ({ gamepadUtils: { gamepads } }: HomeProps) => {
+    const [devices, setDevices] = useState<any[]>([]);
+
+    useEffect(() => {
+        ipc.listen((ipcMessage) => {
+            if (ipcMessage) {
+                const { kind, data } = ipcMessage;
+                switch (kind) {
+                    case "DeviceDiscovered": {
+                        console.log(data);
+                        setDevices((devices) => {
+                            const deviceName = data.name;
+                            return devices.some((d) => d.name === deviceName)
+                                ? devices
+                                : [...devices, data];
+                        });
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            }
+        });
+    }, []);
+
     return (
         <div>
+            {devices.map((d) => (
+                <div key={d.name}>
+                    <button
+                        className="btn btn-success"
+                        onClick={() => {
+                            ipc.call("ConnectToDevice", {
+                                device_name: d.name,
+                            });
+                        }}
+                    >
+                        {d.name}
+                    </button>
+                </div>
+            ))}
+            <button className="btn btn-success"
+                        onClick={() => {
+                            ipc.call("RequestCastLocal");
+                        }}>Cast local</button>
             <p>{`pressed : ${gamepads[0]?.buttons[0].pressed}`}</p>
             <div>
                 <a href="https://vite.dev" target="_blank">
@@ -35,11 +79,14 @@ export default ({ gamepadUtils: { gamepads } }: HomeProps) => {
             <button className="theme-controller btn btn-secondary" value="mys">
                 Two
             </button>
-            <button className="btn btn-error" onClick={async () => {
-                const list = await ipc.call("get_windows");
-                console.log(list);
-                
-            }}>TESTING THIS IPC</button>
+            <button
+                className="btn btn-error"
+                onClick={() => {
+                    ipc.call("DiscoverDevices");
+                }}
+            >
+                TESTING THIS IPC
+            </button>
             <h1>TTTTTTTTTT</h1>
             <Link to="/about">About</Link>
             <Link to="/testing_home">testing home</Link>
