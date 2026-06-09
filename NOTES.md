@@ -1,3 +1,8 @@
+### UI notes
+- chromecast sub-ui
+    - ghost in the shell-like terminal file list selector
+- app shortcuts view
+    - windows 8 home screen-like grid of apps / web shortcuts(for apps with no device native binary, i.e most streaming services)
 ### Glitch effect CSS
 ```css
 /* tbd */
