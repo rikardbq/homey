@@ -259,7 +259,7 @@ export default ({
 
     return (
         <div
-            className="h-lvh w-lvw bg-no-repeat bg-cover overflow-hidden"
+            className="h-screen w-screen bg-no-repeat bg-cover overflow-hidden"
             style={{
                 background: "url(../wp.jpg)",
             }}
@@ -281,9 +281,17 @@ export default ({
                         textColor = "#ffff44";
                     }
                     return (
-                        <div key={x.vendor}>
+                        <div
+                            key={x.vendor}
+                            className={`
+                                ${currentFocus.vendor === "chromecast" && currentFocus.idx === idx
+                                    ? " glitch-effect-filter"
+                                    : ""
+                                }
+                                animated-filter`}
+                        >
                             <div
-                                className={`text-3xl left-1/5 fixed w-max ${getKeyFrameAnim(idx, currentFocus.idx, previousFocus.idx)}${idx === currentFocus.idx ? ` selected${currentFocus.idx > previousFocus.idx ? " r" : currentFocus.idx < previousFocus.idx ? " l" : ""}` : ""} ${willoopStyles(idx, currentFocus.idx, testItems, items)}`}
+                                className={`text-3xl left-1/5 fixed w-max ${getKeyFrameAnim(idx, currentFocus.idx, previousFocus.idx)}${idx === currentFocus.idx ? ` selected${currentFocus.idx > previousFocus.idx ? " r" : currentFocus.idx < previousFocus.idx ? " l" : ""}` : ""}${willoopStyles(idx, currentFocus.idx, testItems, items)}`}
                                 style={{
                                     fontFamily,
                                     color: textColor,
@@ -293,17 +301,16 @@ export default ({
                                     className={
                                         currentFocus.vendor === "chromecast" &&
                                         idx === currentFocus.idx
-                                            ? "glitch-effect-periodic"
+                                            ? "text-glitch-effect"
                                             : ""
                                     }
                                 >
                                     {x.name.toLowerCase()}
                                 </div>
                             </div>
-                            {/* <ChromecastSelect /> */}
                             <img
                                 src={`../vendor/${x.vendor}_select.webp`}
-                                className={`h-full -right-1/12 scale-150 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}${currentFocus.vendor === "chromecast" && currentFocus.idx === idx ? " image-glitch-effect" : ""}`}
+                                className={`h-screen -right-1/12 scale-150 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}`}
                             />
                         </div>
                     );

@@ -29,7 +29,7 @@
     padding: 0;
 }
 
-@keyframes glitch-wiggle {
+@keyframes text-glitch-animation {
     10% {
         transform: skewX(-8deg);
     }
@@ -68,131 +68,7 @@
     }
 }
 
-@keyframes glitch-wiggle-2 {
-    0% {
-        transform: skewX(24deg);
-    }
-    4% {
-        transform: skewX(-8deg);
-    }
-    8% {
-        transform: skewX(55deg);
-        text-shadow:
-            1px 1px rgba(246, 0, 153, 0.8),
-            -1px -1px rgba(15, 210, 255, 0.8),
-            -1px 0px rgba(255, 210, 0, 1);
-    }
-    12% {
-        transform: skewX(-90deg);
-    }
-    16% {
-        transform: skewX(29deg);
-        filter: blur(1px);
-    }
-    20% {
-        transform: skewX(-90deg);
-        text-shadow:
-            20px 7px 0px rgba(255, 76, 76, 0.8),
-            -28px 0px 2px rgba(54, 91, 255, 0.8),
-            22px -4px 0px rgba(255, 210, 0, 1);
-    }
-    24% {
-        transform: skewX(3deg);
-    }
-    28% {
-        transform: skewX(-2deg);
-        text-shadow:
-            -4px 1px rgba(246, 0, 153, 0.8),
-            2px -1px rgba(15, 210, 255, 0.8),
-            -3px 0px rgba(255, 210, 0, 1);
-    }
-    32% {
-        transform: skewX(1deg);
-    }
-    36% {
-        transform: skewX(10deg);
-    }
-    40% {
-        filter: blur(0px);
-        transform: skewX(0deg);
-    }
-    44% {
-        transform: skewX(24deg);
-    }
-    48% {
-        transform: skewX(-8deg);
-    }
-    52% {
-        filter: blur(1.25px);
-        transform: skewX(55deg);
-        text-shadow:
-            1px 1px rgba(246, 0, 153, 2.8),
-            -1px -1px rgba(15, 210, 255, 2.8),
-            -1px 0px rgba(255, 210, 0, 1);
-    }
-    56% {
-        transform: skewX(91deg);
-    }
-    60% {
-        transform: skewX(29deg);
-    }
-    64% {
-        transform: skewX(0px);
-        text-shadow:
-            20px 7px rgba(255, 76, 76, 0.8),
-            -8px 0px rgba(54, 91, 255, 0.8),
-            22px -4px rgba(255, 210, 0, 1);
-    }
-    68% {
-        transform: skewX(-91deg);
-    }
-    72% {
-        transform: skewX(-2deg);
-        text-shadow:
-            -4px 1px rgba(246, 0, 153, 0.8),
-            2px -1px rgba(15, 210, 255, 0.8),
-            -3px 0px rgba(255, 210, 0, 1);
-    }
-    76% {
-        filter: blur(0px);
-        transform: skewX(1deg);
-    }
-    80% {
-        transform: skewX(10deg);
-    }
-    84% {
-        text-shadow: none;
-        transform: skewX(0deg);
-    }
-    88% {
-        filter: blur(1.25px);
-        transform: skewX(-90deg);
-        text-shadow:
-            18px 8px 0px rgba(250, 96, 96, 0.8),
-            -15px 0px 2px rgba(86, 213, 255, 0.8),
-            20px -4px 2px rgb(198, 255, 112);
-    }
-    92% {
-        transform: skewX(3deg);
-    }
-    96% {
-        transform: skewX(-2deg);
-        text-shadow:
-            -4px 1px rgba(246, 0, 153, 0.8),
-            2px -1px rgba(15, 210, 255, 0.8),
-            -3px 0px rgba(255, 210, 0, 1);
-    }
-    98% {
-        transform: skewX(10deg);
-    }
-    100% {
-        filter: blur(0px);
-        text-shadow: none;
-        transform: skewX(0deg);
-    }
-}
-
-@keyframes glitch-wiggle-periodic {
+@keyframes text-glitch-animation-periodic {
     0% {
         transform: skewX(24deg);
     }
@@ -319,14 +195,14 @@
     }
 }
 
-@keyframes glitch-tear-periodic {
+@keyframes glitch-tear-animation-periodic {
     0% {
         filter: blur(0px);
     }
     0.4% {
         filter: blur(0.5px) url(#glitch2)
-            drop-shadow(-21px 1px rgba(246, 0, 153, 0.8))
-            drop-shadow(-46px -1px rgba(15, 210, 255, 0.8))
+            drop-shadow(21px 1px rgba(246, 0, 153, 0.8))
+            drop-shadow(46px 9px rgba(15, 210, 255, 0.8))
             drop-shadow(-1px 0px rgba(255, 210, 0, 1));
     }
     0.8% {
@@ -340,7 +216,7 @@
     }
     1.4% {
         filter: blur(0.5px) url(#glitch2)
-            drop-shadow(-4px 1px rgba(246, 0, 153, 0.8))
+            drop-shadow(-9px 6px rgba(246, 0, 153, 0.8))
             drop-shadow(2px -1px rgba(15, 210, 255, 0.8))
             drop-shadow(-3px 0px rgba(255, 210, 0, 1));
     }
@@ -374,14 +250,14 @@
     4.4% {
         filter: blur(1.25px) url(#glitch2)
             drop-shadow(18px 8px 0px rgba(250, 96, 96, 0.8))
-            drop-shadow(-15px 0px 2px rgba(86, 213, 255, 0.8))
+            drop-shadow(-15px 6px 2px rgba(86, 213, 255, 0.8))
             drop-shadow(20px -4px 2px rgb(198, 255, 112));
     }
     4.8% {
         filter: blur(0.5px) url(#glitch2)
             drop-shadow(-4px 1px rgba(246, 0, 153, 0.8))
             drop-shadow(2px -1px rgba(15, 210, 255, 0.8))
-            drop-shadow(-3px 0px rgba(255, 210, 0, 1));
+            drop-shadow(-13px 0px rgba(255, 210, 0, 1));
     }
     5% {
         filter: none;
@@ -491,51 +367,31 @@
         --translate-y: -64px;
         animation: selected-animation 0.2s var(--animation-bounce) forwards;
     }
-    /* &:has(+ .left-1) {
-        opacity: 0.5;
-        color: orange;
-    }
-    + .right-1 {
-        opacity: 0.5;
-        color: "green";
-    } */
 }
 
-.image-glitch-effect {
+.animated-filter {
+    will-change: filter;
+}
+
+.glitch-effect-filter {
     animation-composition: add;
     animation:
-        glitch-tear-periodic 9s infinite 0.2s,
-        glitch-tear-periodic 15s infinite 0.2s;
+        glitch-tear-animation-periodic 9s infinite 0.2s,
+        glitch-tear-animation-periodic 15s infinite 0.2s;
 }
 
-.glitch-effect {
+.text-glitch-effect {
     animation:
-        glitch-wiggle 0.2s 0.2s 3,
-        glitch-wiggle 0.5s 0.2s 1;
+        text-glitch-animation 0.2s 0.2s 3,
+        text-glitch-animation 0.5s 0.2s 1;
 }
 
-.glitch-effect-2 {
+.text-glitch-effect-periodic {
     animation-composition: add;
     animation:
-        glitch-wiggle-2 0.2s 0.2s 2,
-        glitch-wiggle-2 0.4s 0.2s 2;
+        text-glitch-animation-periodic 9s infinite 0.2s,
+        text-glitch-animation-periodic 15s infinite 0.2s;
 }
-
-.glitch-effect-periodic {
-    animation-composition: add;
-    animation:
-        glitch-wiggle-periodic 9s infinite 0.2s,
-        glitch-wiggle-periodic 15s infinite 0.2s;
-}
-
-/* .loop {
-    &.r {
-        transform: translate3d(0px, 64px, 0px);
-    }
-    &.l {
-        transform: translate3d(0px, -64px, 0px);
-    }
-} */
 
 .left-1 {
     --scale: 1.25;
