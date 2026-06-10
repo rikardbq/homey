@@ -4,6 +4,8 @@ import "../app.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRateLimit } from "../hooks/useRateLimit";
 import type { GamepadUtils } from "../hooks/useGamepad";
+import NoiseFilter from "../components/svg/NoiseFilterTear2";
+// import ChromecastSelect from "../components/svg/ChromecastSelect";
 
 // const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
 //     return (
@@ -179,9 +181,6 @@ export default ({
             behavior: "smooth",
         });
     };
-    const [_vendorImage, setVendorImage] = useState<
-        (React.JSX.Element | null)[]
-    >([]);
     // const setFocused = (idx: number) => {
     //     setPreviousFocus(currentFocus);
     //     setCurrentFocus(idx);
@@ -200,16 +199,6 @@ export default ({
     );
 
     useEffect(() => {
-        setVendorImage(
-            items.map((x) =>
-                currentFocus.vendor === x.vendor ? (
-                    <img
-                        src={`../vendor/${x.vendor}_select.webp`}
-                        className="vendor-image-select-slide-in"
-                    />
-                ) : null,
-            ),
-        );
         return () => {
             window.removeEventListener("keydown", navHandler.current);
         };
@@ -224,16 +213,6 @@ export default ({
             items,
         );
         window.addEventListener("keydown", navHandler.current);
-        setVendorImage(
-            items.map((x) =>
-                currentFocus.vendor === x.vendor ? (
-                    <img
-                        src={`../vendor/${x.vendor}_select.webp`}
-                        className="vendor-image-select-slide-in"
-                    />
-                ) : null,
-            ),
-        );
     }, [currentFocus]);
 
     useEffect(() => {
@@ -285,6 +264,7 @@ export default ({
                 background: "url(../wp.jpg)",
             }}
         >
+            <NoiseFilter />
             <div
                 className="h-full w-full absolute bg-no-repeat left-0 top-0"
                 style={{
@@ -311,7 +291,7 @@ export default ({
                             >
                                 <div
                                     className={
-                                        currentFocus.vendor === "chromecast" && 
+                                        currentFocus.vendor === "chromecast" &&
                                         idx === currentFocus.idx
                                             ? "glitch-effect-periodic"
                                             : ""
@@ -320,9 +300,10 @@ export default ({
                                     {x.name.toLowerCase()}
                                 </div>
                             </div>
+                            {/* <ChromecastSelect /> */}
                             <img
                                 src={`../vendor/${x.vendor}_select.webp`}
-                                className={`h-3/4 right-1/12 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}`}
+                                className={`h-full -right-1/12 scale-150 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}${currentFocus.vendor === "chromecast" && currentFocus.idx === idx ? " image-glitch-effect" : ""}`}
                             />
                         </div>
                     );

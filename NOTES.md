@@ -3,6 +3,19 @@
     - ghost in the shell-like terminal file list selector
 - app shortcuts view
     - windows 8 home screen-like grid of apps / web shortcuts(for apps with no device native binary, i.e most streaming services)
+- touch 
+    - translate3d scrolling
+    - distance(d) point A -> B
+    - time(t) touch end - touch start
+    - velocity index(v) = t / d. normalized to 0.0-1.0
+    - base max(b) list length * 1.5
+    - distance to scroll = b - (b * v)
+    - update focused element state at
+        - start = Date.now();
+        - fps = 1000 / 10;
+        - fps + log(fps + (Date.now() - start)) ???
+        - 10 - Math.log(10 - Math.log(10)) -> result - Math.log(10 - Math.log(result)) -> ...
+
 ### Glitch effect CSS
 ```css
 /* tbd */
