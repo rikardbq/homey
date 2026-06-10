@@ -261,7 +261,7 @@ export default ({
         <div
             className="h-screen w-screen bg-no-repeat bg-cover overflow-hidden"
             style={{
-                background: "url(../wp.jpg)",
+                backgroundImage: "url(../vendor/chromecast/wp.png)",
             }}
         >
             <NoiseFilter />
@@ -309,7 +309,7 @@ export default ({
                                 </div>
                             </div>
                             <img
-                                src={`../vendor/${x.vendor}_select.webp`}
+                                src={`../vendor/${x.vendor}/select.webp`}
                                 className={`h-screen -right-1/12 scale-150 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}`}
                             />
                         </div>
