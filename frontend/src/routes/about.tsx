@@ -148,6 +148,10 @@ export default ({
         stick: { moveX: _moveX, moveY, deadzone },
     },
 }: Props) => {
+    const [updateRate, setUpdateRate] = useState(15);
+    const [shrinkVal, setShrinkVal] = useState(0);
+    const [times, setTimes] = useState([0, 0]);
+    const [dist, setDist] = useState([0, 0]);
     const limitRate = useRateLimit();
     const [focusedElem, _setFocusedElem] = useState("back_btn");
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
@@ -236,6 +240,39 @@ export default ({
                 limitRate(() => setFocused(willoop ? 0 : nextFocus), 250);
             }
         }
+
+        // SCROLL TOUCH HANDLING
+        if (times[1] !== 0 && updateRate > 5) {
+            limitRate(() => {
+                const time = times[1] - times[0];
+                const distance = dist[0] - dist[1];
+                const vel = Math.abs(time / distance);
+                console.log("every 15th", currentFocus.idx);
+                const nsv = shrinkVal + (vel === Infinity ? 0 : vel);
+
+                // nextfocus
+                const list_threshold =
+                    testItems.length > 3 ? 3 : testItems.length;
+                const nextFocus =
+                    currentFocus.idx +
+                    (distance > 0 ? 1 : distance === 0 ? 0 : -1);
+                const willoopLeft = nextFocus < list_threshold;
+                const willoopRight =
+                    nextFocus > items.length - (list_threshold + 1);
+                setFocused(
+                    willoopLeft
+                        ? items.length - (list_threshold + 1)
+                        : willoopRight
+                          ? list_threshold
+                          : nextFocus,
+                );
+                // nextfocus end
+
+                setShrinkVal(nsv);
+                setUpdateRate(updateRate - nsv);
+            }, 1000 / updateRate);
+        }
+        // SCROLL TOUCH HANDLING END
     });
 
     // prevent list from getting bounds issues
@@ -272,7 +309,23 @@ export default ({
                         "linear-gradient(to right, black 25%, transparent 100%)",
                 }}
             />
-            <div className="x-items h-screen content-center">
+            <div
+                className="x-items h-screen content-center"
+                onMouseDown={(e) => {
+                    const startTime = Date.now();
+                    setTimes([startTime, 0]);
+                    const startY = e.clientY;
+                    setUpdateRate(15);
+                    setShrinkVal(0);
+                    setDist([startY, 0]);
+                }}
+                onMouseUp={(e) => {
+                    const endTime = Date.now();
+                    setTimes([times[0], endTime]);
+                    const stopY = e.clientY;
+                    setDist([dist[0], stopY]);
+                }}
+            >
                 {items.map((x, idx) => {
                     let fontFamily = "FetteUnzFraktur";
                     let textColor = "#FF4444";
@@ -284,9 +337,11 @@ export default ({
                         <div
                             key={x.vendor}
                             className={`
-                                ${currentFocus.vendor === "chromecast" && currentFocus.idx === idx
-                                    ? " glitch-effect-filter"
-                                    : ""
+                                ${
+                                    currentFocus.vendor === "chromecast" &&
+                                    currentFocus.idx === idx
+                                        ? " glitch-effect-filter"
+                                        : ""
                                 }
                                 animated-filter`}
                         >
