@@ -148,8 +148,9 @@ export default ({
         stick: { moveX: _moveX, moveY, deadzone },
     },
 }: Props) => {
+    const [moving, setMoving] = useState(false);
     const [canMove, setCanMove] = useState(false);
-    const [updateRate, setUpdateRate] = useState(20);
+    const [updateRate, setUpdateRate] = useState(30);
     const [shrinkVal, setShrinkVal] = useState(0);
     const [times, setTimes] = useState([0, 0]);
     const [dist, setDist] = useState([0, 0]);
@@ -327,7 +328,7 @@ export default ({
                     const startTime = Date.now();
                     setTimes([startTime, 0]);
                     const startY = e.clientY;
-                    setUpdateRate(20);
+                    setUpdateRate(30);
                     setShrinkVal(0);
                     setDist([startY, 0]);
                     setMoveDist([startY, 0]);
@@ -338,9 +339,10 @@ export default ({
                         const y = e.clientY;
                         const delta = moveDist[0] - y;
                         console.log(delta);
-                        
-                        if (Math.abs(delta) >= 10) {
+                        setMoving(false);
+                        if (Math.abs(delta) >= 30) {
                             console.log("TICK");
+                            setMoving(true);
                             const list_threshold =
                                 testItems.length > 3 ? 3 : testItems.length;
                             if (delta < 0) {
@@ -368,10 +370,12 @@ export default ({
                 }}
                 onMouseUp={(e) => {
                     setCanMove(false);
-                    const endTime = Date.now();
-                    setTimes([times[0], endTime]);
-                    const stopY = e.clientY;
-                    setDist([dist[0], stopY]);
+                    if (moving) {
+                        const endTime = Date.now();
+                        setTimes([times[0], endTime]);
+                        const stopY = e.clientY;
+                        setDist([dist[0], stopY]);
+                    }
                 }}
             >
                 {items.map((x, idx) => {
