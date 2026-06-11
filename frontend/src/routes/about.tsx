@@ -148,10 +148,12 @@ export default ({
         stick: { moveX: _moveX, moveY, deadzone },
     },
 }: Props) => {
-    const [updateRate, setUpdateRate] = useState(15);
+    const [canMove, setCanMove] = useState(false);
+    const [updateRate, setUpdateRate] = useState(20);
     const [shrinkVal, setShrinkVal] = useState(0);
     const [times, setTimes] = useState([0, 0]);
     const [dist, setDist] = useState([0, 0]);
+    const [moveDist, setMoveDist] = useState([0, 0]);
     const limitRate = useRateLimit();
     const [focusedElem, _setFocusedElem] = useState("back_btn");
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
@@ -221,23 +223,32 @@ export default ({
 
     useEffect(() => {
         if (gamepad) {
+            const list_threshold = testItems.length > 3 ? 3 : testItems.length;
             if (
                 isButtonPressed(gamepad, "XBOX.DPAD_UP") ||
                 moveY(gamepad, "LEFT_STICK") < 0 - deadzone
             ) {
                 const nextFocus = currentFocus.idx - 1;
-                const willoop = nextFocus < 0;
+                const willoop = nextFocus < list_threshold;
                 limitRate(
-                    () => setFocused(willoop ? items.length - 1 : nextFocus),
-                    250,
+                    () =>
+                        setFocused(
+                            willoop
+                                ? items.length - (list_threshold + 1)
+                                : nextFocus,
+                        ),
+                    200,
                 );
             } else if (
                 isButtonPressed(gamepad, "XBOX.DPAD_DOWN") ||
                 moveY(gamepad, "LEFT_STICK") > 0 + deadzone
             ) {
                 const nextFocus = currentFocus.idx + 1;
-                const willoop = nextFocus > items.length - 1;
-                limitRate(() => setFocused(willoop ? 0 : nextFocus), 250);
+                const willoop = nextFocus > items.length - (list_threshold + 1);
+                limitRate(
+                    () => setFocused(willoop ? list_threshold : nextFocus),
+                    200,
+                );
             }
         }
 
@@ -247,7 +258,6 @@ export default ({
                 const time = times[1] - times[0];
                 const distance = dist[0] - dist[1];
                 const vel = Math.abs(time / distance);
-                console.log("every 15th", currentFocus.idx);
                 const nsv = shrinkVal + (vel === Infinity ? 0 : vel);
 
                 // nextfocus
@@ -269,7 +279,9 @@ export default ({
                 // nextfocus end
 
                 setShrinkVal(nsv);
-                setUpdateRate(updateRate - nsv);
+                if (!canMove) {
+                    setUpdateRate(updateRate - nsv);
+                }
             }, 1000 / updateRate);
         }
         // SCROLL TOUCH HANDLING END
@@ -315,11 +327,47 @@ export default ({
                     const startTime = Date.now();
                     setTimes([startTime, 0]);
                     const startY = e.clientY;
-                    setUpdateRate(15);
+                    setUpdateRate(20);
                     setShrinkVal(0);
                     setDist([startY, 0]);
+                    setMoveDist([startY, 0]);
+                    setCanMove(true);
+                }}
+                onMouseMove={(e) => {
+                    if (canMove) {
+                        const y = e.clientY;
+                        const delta = moveDist[0] - y;
+                        console.log(delta);
+                        
+                        if (Math.abs(delta) >= 10) {
+                            console.log("TICK");
+                            const list_threshold =
+                                testItems.length > 3 ? 3 : testItems.length;
+                            if (delta < 0) {
+                                const nextFocus = currentFocus.idx - 1;
+                                const willoop = nextFocus < list_threshold;
+                                setFocused(
+                                    willoop
+                                        ? items.length - (list_threshold + 1)
+                                        : nextFocus,
+                                );
+                            } else {
+                                const nextFocus = currentFocus.idx + 1;
+                                const willoop =
+                                    nextFocus >
+                                    items.length - (list_threshold + 1);
+                                setFocused(
+                                    willoop ? list_threshold : nextFocus,
+                                );
+                            }
+                            setMoveDist([y, y]);
+                        } else {
+                            setMoveDist([moveDist[0], y]);
+                        }
+                    }
                 }}
                 onMouseUp={(e) => {
+                    setCanMove(false);
                     const endTime = Date.now();
                     setTimes([times[0], endTime]);
                     const stopY = e.clientY;
