@@ -141,6 +141,24 @@ const willoopStyles = (
     return classes;
 };
 
+const calcNextFocus = (
+    list: any[],
+    padded_list: any[],
+    currFocus: number,
+    direction: number,
+) => {
+    const list_threshold = list.length > 3 ? 3 : list.length;
+    const nextFocus = currFocus + direction;
+    const willoopLeft = nextFocus < list_threshold;
+    const willoopRight = nextFocus > padded_list.length - (list_threshold + 1);
+
+    return willoopLeft
+        ? padded_list.length - (list_threshold + 1)
+        : willoopRight
+          ? list_threshold
+          : nextFocus;
+};
+
 export default ({
     gamepadUtils: {
         gamepads,
@@ -148,14 +166,14 @@ export default ({
         stick: { moveX: _moveX, moveY, deadzone },
     },
 }: Props) => {
-    const [canMove, setCanMove] = useState(false);
-    // const [willCoast, setWillCoast] = useState(false);
-    const [currentY, setCurrentY] = useState(0);
-    const [updateRate, setUpdateRate] = useState(30);
-    const [shrinkVal, setShrinkVal] = useState(0);
-    const [times, setTimes] = useState([0, 0]);
-    const [dist, setDist] = useState([0, 0]);
-    const [moveDist, setMoveDist] = useState([0, 0]);
+    const [canTouchMove, setCanTouchMove] = useState(false);
+    const [scrollUpdateRate, setScrollUpdateRate] = useState(30);
+    const [scrollUpdateRateShrinkVal, setScrollUpdateRateShrinkVal] =
+        useState(0);
+    const [touchTimes, setTouchTimes] = useState([0, 0]);
+    const [touchPos, setTouchPos] = useState([0, 0]);
+    const [touchMovePos, setTouchMovePos] = useState([0, 0]);
+    const [touchMoveTickY, setTouchMoveTickY] = useState(0);
     const limitRate = useRateLimit();
     const [focusedElem, _setFocusedElem] = useState("back_btn");
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
@@ -172,20 +190,20 @@ export default ({
         idx: previousFocus.idx,
         vendor: previousFocus.vendor,
     });
-    const setFocused = (next_focus: number) => {
+    const setFocused = (nextFocus: number) => {
         const pfocus =
-            next_focus - currentFocus.idx > 1
-                ? next_focus + 1
-                : next_focus - currentFocus.idx < -1
-                  ? next_focus - 1
+            nextFocus - currentFocus.idx > 1
+                ? nextFocus + 1
+                : nextFocus - currentFocus.idx < -1
+                  ? nextFocus - 1
                   : currentFocus.idx;
         setPreviousFocus({
             idx: pfocus,
             vendor: items[pfocus].vendor,
         });
 
-        setCurrentFocus({ idx: next_focus, vendor: items[next_focus].vendor });
-        document.getElementById(`${next_focus}`)?.scrollIntoView({
+        setCurrentFocus({ idx: nextFocus, vendor: items[nextFocus].vendor });
+        document.getElementById(`${nextFocus}`)?.scrollIntoView({
             behavior: "smooth",
         });
     };
@@ -257,38 +275,30 @@ export default ({
         }
 
         // SCROLL TOUCH HANDLING
-        if (times[1] !== 0 && updateRate > 5) {
+        if (touchTimes[1] !== 0 && scrollUpdateRate > 5) {
             limitRate(
                 () => {
-                    const time = times[1] - times[0];
-                    const distance = dist[0] - dist[1];
+                    const time = touchTimes[1] - touchTimes[0];
+                    const distance = touchPos[0] - touchPos[1];
                     const vel = Math.abs(time / distance);
-                    const nsv = shrinkVal + (vel === Infinity ? 0 : vel);
+                    const nsv =
+                        scrollUpdateRateShrinkVal +
+                        (vel === Infinity ? 0 : vel);
 
-                    // nextfocus
-                    const list_threshold =
-                        testItems.length > 3 ? 3 : testItems.length;
-                    const nextFocus =
-                        currentFocus.idx +
-                        (distance > 0 ? 1 : distance === 0 ? 0 : -1);
-                    const willoopLeft = nextFocus < list_threshold;
-                    const willoopRight =
-                        nextFocus > items.length - (list_threshold + 1);
                     setFocused(
-                        willoopLeft
-                            ? items.length - (list_threshold + 1)
-                            : willoopRight
-                              ? list_threshold
-                              : nextFocus,
+                        calcNextFocus(
+                            testItems,
+                            items,
+                            currentFocus.idx,
+                            distance > 0 ? 1 : distance === 0 ? 0 : -1,
+                        ),
                     );
-                    // nextfocus end
-
-                    setShrinkVal(nsv);
-                    if (!canMove) {
-                        setUpdateRate(updateRate - nsv);
+                    setScrollUpdateRateShrinkVal(nsv);
+                    if (!canTouchMove) {
+                        setScrollUpdateRate(scrollUpdateRate - nsv);
                     }
                 },
-                1000 / updateRate,
+                1000 / scrollUpdateRate,
                 "touch_scroll",
             );
         }
@@ -333,50 +343,43 @@ export default ({
                 className="x-items h-screen content-center"
                 onMouseDown={(e) => {
                     const startTime = Date.now();
-                    setTimes([startTime, 0]);
+                    setTouchTimes([startTime, 0]);
                     const startY = e.clientY;
-                    setUpdateRate(30);
-                    setShrinkVal(0);
-                    setDist([startY, 0]);
-                    setMoveDist([startY, 0]);
-                    setCurrentY(startY);
-                    setCanMove(true);
+                    setScrollUpdateRate(30);
+                    setScrollUpdateRateShrinkVal(0);
+                    setTouchPos([startY, 0]);
+                    setTouchMovePos([startY, 0]);
+                    setTouchMoveTickY(startY);
+                    setCanTouchMove(true);
                 }}
                 onMouseMove={(e) => {
-                    if (canMove) {
+                    if (canTouchMove) {
                         const y = e.clientY;
-                        const delta = currentY - y;
-                        const list_threshold =
-                            testItems.length > 3 ? 3 : testItems.length;
+                        const delta = touchMoveTickY - y;
                         if (Math.abs(delta) > 30) {
-                            if (delta < 0) {
-                                const nextFocus = currentFocus.idx - 1;
-                                const willoop = nextFocus < list_threshold;
-                                setFocused(
-                                    willoop
-                                        ? items.length - (list_threshold + 1)
-                                        : nextFocus,
-                                );
-                            } else {
-                                const nextFocus = currentFocus.idx + 1;
-                                const willoop =
-                                    nextFocus > items.length - (list_threshold + 1);
-                                setFocused(willoop ? list_threshold : nextFocus);
-                            }
-                            setCurrentY(y);
+                            setFocused(
+                                calcNextFocus(
+                                    testItems,
+                                    items,
+                                    currentFocus.idx,
+                                    delta > 0 ? 1 : delta === 0 ? 0 : -1,
+                                ),
+                            );
+                            setTouchMoveTickY(y);
                         }
-                        setMoveDist([moveDist[1] !== 0 ? moveDist[1] : y, y]);
+                        setTouchMovePos([
+                            touchMovePos[1] !== 0 ? touchMovePos[1] : y,
+                            y,
+                        ]);
                     }
                 }}
                 onMouseUp={(e) => {
-                    setCanMove(false);
-                    console.log(Math.abs(moveDist[0] - moveDist[1]));
-                    
-                    if (Math.abs(moveDist[0] - moveDist[1]) >= 5) {
+                    setCanTouchMove(false);
+                    if (Math.abs(touchMovePos[0] - touchMovePos[1]) >= 5) {
                         const endTime = Date.now();
-                        setTimes([times[0], endTime]);
+                        setTouchTimes([touchTimes[0], endTime]);
                         const stopY = e.clientY;
-                        setDist([dist[0], stopY]);
+                        setTouchPos([touchPos[0], stopY]);
                     }
                 }}
             >
