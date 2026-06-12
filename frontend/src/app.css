@@ -276,6 +276,7 @@
 .vendor-image {
     object-fit: cover;
     opacity: 0;
+    visibility: hidden;
     transform: translate3d(200px, 0px, 0px);
 }
 
@@ -284,6 +285,7 @@
         opacity 0.3s linear 0.2s,
         transform 0.5s var(--animation-slide) 0.2s;
     opacity: 1;
+    visibility: visible;
     transform: translate3d(0px, 0px, 0px);
     /* animation: vendor-image-slide-in 1s var(--animation-slide) forwards 0.2s; */
 }
@@ -330,8 +332,7 @@
 /* fix this */
 .x-items {
     user-select: none;
-    > div {
-        will-change: filter;
+    > div > div {
         > div {
             opacity: 0;
             &.selected {
@@ -365,11 +366,11 @@
     transform: scale(1.75) translate3d(0px, var(--translate-y), 0px);
     transform-origin: left;
     opacity: 1;
-    &.r {
+    &.from-r {
         --translate-y: 64px;
         animation: selected-animation 0.2s var(--animation-bounce) forwards;
     }
-    &.l {
+    &.from-l {
         --translate-y: -64px;
         animation: selected-animation 0.2s var(--animation-bounce) forwards;
     }

@@ -241,7 +241,7 @@ export default ({
                                 ? items.length - (list_threshold + 1)
                                 : nextFocus,
                         ),
-                    200,
+                    100,
                     "gamepad",
                 );
             } else if (
@@ -252,7 +252,7 @@ export default ({
                 const willoop = nextFocus > items.length - (list_threshold + 1);
                 limitRate(
                     () => setFocused(willoop ? list_threshold : nextFocus),
-                    200,
+                    100,
                     "gamepad",
                 );
             }
@@ -310,112 +310,132 @@ export default ({
 
     return (
         <div
-            className="h-screen w-screen bg-no-repeat bg-cover overflow-hidden"
+            className="absolute inset-0 bg-no-repeat bg-cover overflow-hidden"
             style={{
                 backgroundImage: "url(../vendor/chromecast/wp.png)",
-            }}
-            onMouseDown={(e) => {
-                const startTime = Date.now();
-                setTouchTimes([startTime, 0]);
-                const startY = e.clientY;
-                setScrollUpdateRate(30);
-                setScrollUpdateRateShrinkVal(0);
-                setTouchPos([startY, 0]);
-                setTouchMovePos([startY, 0]);
-                setTouchMoveTickY(startY);
-                setCanTouchMove(true);
-            }}
-            onMouseMove={(e) => {
-                if (canTouchMove) {
-                    const y = e.clientY;
-                    const delta = touchMoveTickY - y;
-                    if (Math.abs(delta) > 30) {
-                        setFocused(
-                            calcNextFocus(
-                                testItems,
-                                items,
-                                currentFocus.idx,
-                                delta > 0 ? 1 : delta === 0 ? 0 : -1,
-                            ),
-                        );
-                        setTouchMoveTickY(y);
-                    }
-                    setTouchMovePos([
-                        touchMovePos[1] !== 0 ? touchMovePos[1] : y,
-                        y,
-                    ]);
-                    debounce(
-                        () => {
-                            setTouchMovePos([0, 0]);
-                        },
-                        100,
-                        "touch_move",
-                    );
-                }
-            }}
-            onMouseUp={(e) => {
-                setCanTouchMove(false);
-                if (Math.abs(touchMovePos[0] - touchMovePos[1]) >= 10) {
-                    const endTime = Date.now();
-                    setTouchTimes([touchTimes[0], endTime]);
-                    const stopY = e.clientY;
-                    setTouchPos([touchPos[0], stopY]);
-                }
             }}
         >
             <NoiseFilter />
             <div
-                className="h-full w-full absolute bg-no-repeat left-0 top-0"
+                className="absolute inset-0 bg-no-repeat"
                 style={{
                     backgroundImage:
                         "linear-gradient(to right, black 25%, transparent 100%)",
                 }}
             />
-            <div className="x-items h-screen content-center">
-                {items.map((x, idx) => {
-                    let fontFamily = "FetteUnzFraktur";
-                    let textColor = "#FF4444";
-                    if (x.name === "chromecast") {
-                        fontFamily = "Cyberpunk";
-                        textColor = "#ffff44";
-                    }
-                    return (
-                        <div
-                            key={x.vendor}
-                            className={
-                                currentFocus.vendor === "chromecast" &&
-                                currentFocus.idx === idx
-                                    ? " glitch-effect-filter"
-                                    : ""
+            <div className="flex flex-row w-full h-full">
+                <div
+                    className="x-items w-1/2 content-center justify-items-center z-10"
+                    onMouseDown={(e) => {
+                        const startTime = Date.now();
+                        setTouchTimes([startTime, 0]);
+                        const startY = e.clientY;
+                        setScrollUpdateRate(30);
+                        setScrollUpdateRateShrinkVal(0);
+                        setTouchPos([startY, 0]);
+                        setTouchMovePos([startY, 0]);
+                        setTouchMoveTickY(startY);
+                        setCanTouchMove(true);
+                    }}
+                    onMouseMove={(e) => {
+                        if (canTouchMove) {
+                            const y = e.clientY;
+                            const delta = touchMoveTickY - y;
+                            if (Math.abs(delta) > 30) {
+                                setFocused(
+                                    calcNextFocus(
+                                        testItems,
+                                        items,
+                                        currentFocus.idx,
+                                        delta > 0 ? 1 : delta === 0 ? 0 : -1,
+                                    ),
+                                );
+                                setTouchMoveTickY(y);
                             }
-                        >
-                            <div
-                                className={`text-3xl left-1/5 fixed w-max ${getKeyFrameAnim(idx, currentFocus.idx, previousFocus.idx)}${idx === currentFocus.idx ? ` selected${currentFocus.idx > previousFocus.idx ? " r" : currentFocus.idx < previousFocus.idx ? " l" : ""}` : ""}${willoopStyles(idx, currentFocus.idx, testItems, items)}`}
-                                style={{
-                                    fontFamily,
-                                    color: textColor,
-                                }}
-                            >
+                            setTouchMovePos([
+                                touchMovePos[1] !== 0 ? touchMovePos[1] : y,
+                                y,
+                            ]);
+                            debounce(
+                                () => {
+                                    setTouchMovePos([0, 0]);
+                                },
+                                150,
+                                "touch_move",
+                            );
+                        }
+                    }}
+                    onMouseUp={(e) => {
+                        setCanTouchMove(false);
+                        if (Math.abs(touchMovePos[0] - touchMovePos[1]) >= 7) {
+                            const endTime = Date.now();
+                            setTouchTimes([touchTimes[0], endTime]);
+                            const stopY = e.clientY;
+                            setTouchPos([touchPos[0], stopY]);
+                        }
+                    }}
+                >
+                    <div>
+                        {items.map((x, idx) => {
+                            let fontFamily = "FetteUnzFraktur";
+                            let textColor = "#FF4444";
+                            if (x.name === "chromecast") {
+                                fontFamily = "Cyberpunk";
+                                textColor = "#ffff44";
+                            }
+                            return (
                                 <div
+                                    key={x.vendor}
                                     className={
                                         currentFocus.vendor === "chromecast" &&
-                                        idx === currentFocus.idx
-                                            ? "text-glitch-effect"
+                                        currentFocus.idx === idx
+                                            ? " glitch-effect-filter"
                                             : ""
                                     }
                                 >
-                                    {x.name.toLowerCase()}
+                                    <div
+                                        key={x.vendor}
+                                        className={`absolute text-3xl ${getKeyFrameAnim(idx, currentFocus.idx, previousFocus.idx)}${idx === currentFocus.idx ? ` selected${currentFocus.idx > previousFocus.idx ? " from-r" : currentFocus.idx < previousFocus.idx ? " from-l" : ""}` : ""}${willoopStyles(idx, currentFocus.idx, testItems, items)}`}
+                                        style={{
+                                            fontFamily,
+                                            color: textColor,
+                                        }}
+                                    >
+                                        <div
+                                            className={
+                                                currentFocus.vendor ===
+                                                    "chromecast" &&
+                                                idx === currentFocus.idx
+                                                    ? " text-glitch-effect"
+                                                    : ""
+                                            }
+                                        >
+                                            {x.name.toLowerCase()}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                <div className="w-1/2">
+                    {items.map((x, idx) => {
+                        return (
                             <img
+                                key={x.vendor}
                                 src={`../vendor/${x.vendor}/select.webp`}
-                                className={`h-screen -right-1/12 scale-150 fixed self-center place-content-center vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}`}
+                                className={`absolute scale-150 h-full vendor-image${currentFocus.idx === idx ? " vendor-image-select-slide-in" : ""}${
+                                    currentFocus.vendor === "chromecast" &&
+                                    currentFocus.idx === idx
+                                        ? " glitch-effect-filter"
+                                        : ""
+                                }`}
                             />
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
-            <div>
+            <div className="absolute bottom-5 left-8">
                 <Link
                     style={{
                         fontFamily: "FetteUnzFraktur",
@@ -429,7 +449,6 @@ export default ({
                                 ? "2px solid #dddddd"
                                 : "none",
                     }}
-                    className="absolute bottom-5 left-8 hover-3d"
                     to="/"
                 >
                     back
