@@ -71,7 +71,7 @@ export default ({
         ) {
             if (focused.indexOf(true) !== 0) {
                 nextFocusRef.current = focused.indexOf(true) - 1;
-                limitRate(navx, 100);
+                limitRate(navx, 100, "gamepad");
             }
         } else if (
             isButtonPressed(gamepad1, "XBOX.DPAD_RIGHT") ||
@@ -79,7 +79,7 @@ export default ({
         ) {
             if (focused.indexOf(true) !== arr.length - 1) {
                 nextFocusRef.current = focused.indexOf(true) + 1;
-                limitRate(navx, 100);
+                limitRate(navx, 100, "gamepad");
             }
         }
     }

@@ -344,8 +344,6 @@ export default ({
                 }}
                 onMouseMove={(e) => {
                     if (canMove) {
-                        // limitRate(() => {
-                        // }, 1000/60, "touch_move");
                         const y = e.clientY;
                         const delta = currentY - y;
                         const list_threshold =
