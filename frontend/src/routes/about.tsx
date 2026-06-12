@@ -5,24 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRateLimit } from "../hooks/useRateLimit";
 import type { GamepadUtils } from "../hooks/useGamepad";
 import NoiseFilter from "../components/svg/NoiseFilterTear2";
-// import ChromecastSelect from "../components/svg/ChromecastSelect";
-
-// const ListItem = ({ id, name, description: _, focused, ...rest }: any) => {
-//     return (
-//         <li id={id} {...rest}>
-//             <div
-//                 className={`transition-all duration-150 ease-in-out min-w-40 min-h-40 ${focused ? "scale-125 border-primary rounded-xl shadow-[0px_0px_20px_5px_rgba(0,0,0,0.25)] shadow-primary" : "shadow-md rounded-lg border-transparent"}`}
-//                 // style={{
-//                 //     width: "500px",
-//                 //     height: "500px",
-//                 //     border: focused ? "2px solid green" : "",
-//                 // }}
-//             >
-//                 {name}
-//             </div>
-//         </li>
-//     );
-// };
+import { useDebounce } from "../hooks/useDebounce";
 
 const testItems = [
     {
@@ -175,6 +158,7 @@ export default ({
     const [touchMovePos, setTouchMovePos] = useState([0, 0]);
     const [touchMoveTickY, setTouchMoveTickY] = useState(0);
     const limitRate = useRateLimit();
+    const debounce = useDebounce();
     const [focusedElem, _setFocusedElem] = useState("back_btn");
     const gamepad = useMemo(() => gamepads[0], [gamepads]);
     const [items, _setItems] = useState([
@@ -330,6 +314,54 @@ export default ({
             style={{
                 backgroundImage: "url(../vendor/chromecast/wp.png)",
             }}
+            onMouseDown={(e) => {
+                const startTime = Date.now();
+                setTouchTimes([startTime, 0]);
+                const startY = e.clientY;
+                setScrollUpdateRate(30);
+                setScrollUpdateRateShrinkVal(0);
+                setTouchPos([startY, 0]);
+                setTouchMovePos([startY, 0]);
+                setTouchMoveTickY(startY);
+                setCanTouchMove(true);
+            }}
+            onMouseMove={(e) => {
+                if (canTouchMove) {
+                    const y = e.clientY;
+                    const delta = touchMoveTickY - y;
+                    if (Math.abs(delta) > 30) {
+                        setFocused(
+                            calcNextFocus(
+                                testItems,
+                                items,
+                                currentFocus.idx,
+                                delta > 0 ? 1 : delta === 0 ? 0 : -1,
+                            ),
+                        );
+                        setTouchMoveTickY(y);
+                    }
+                    setTouchMovePos([
+                        touchMovePos[1] !== 0 ? touchMovePos[1] : y,
+                        y,
+                    ]);
+                    debounce(
+                        () => {
+                            setTouchMovePos([0, 0]);
+                        },
+                        100,
+                        "touch_move",
+                    );
+                }
+            }}
+            onMouseUp={(e) => {
+                setCanTouchMove(false);
+                if (Math.abs(touchMovePos[0] - touchMovePos[1]) >= 10) {
+                    const endTime = Date.now();
+                    setTouchTimes([touchTimes[0], endTime]);
+                    const stopY = e.clientY;
+                    setTouchPos([touchPos[0], stopY]);
+                }
+            }}
         >
             <NoiseFilter />
             <div
@@ -339,50 +371,7 @@ export default ({
                         "linear-gradient(to right, black 25%, transparent 100%)",
                 }}
             />
-            <div
-                className="x-items h-screen content-center"
-                onMouseDown={(e) => {
-                    const startTime = Date.now();
-                    setTouchTimes([startTime, 0]);
-                    const startY = e.clientY;
-                    setScrollUpdateRate(30);
-                    setScrollUpdateRateShrinkVal(0);
-                    setTouchPos([startY, 0]);
-                    setTouchMovePos([startY, 0]);
-                    setTouchMoveTickY(startY);
-                    setCanTouchMove(true);
-                }}
-                onMouseMove={(e) => {
-                    if (canTouchMove) {
-                        const y = e.clientY;
-                        const delta = touchMoveTickY - y;
-                        if (Math.abs(delta) > 30) {
-                            setFocused(
-                                calcNextFocus(
-                                    testItems,
-                                    items,
-                                    currentFocus.idx,
-                                    delta > 0 ? 1 : delta === 0 ? 0 : -1,
-                                ),
-                            );
-                            setTouchMoveTickY(y);
-                        }
-                        setTouchMovePos([
-                            touchMovePos[1] !== 0 ? touchMovePos[1] : y,
-                            y,
-                        ]);
-                    }
-                }}
-                onMouseUp={(e) => {
-                    setCanTouchMove(false);
-                    if (Math.abs(touchMovePos[0] - touchMovePos[1]) >= 5) {
-                        const endTime = Date.now();
-                        setTouchTimes([touchTimes[0], endTime]);
-                        const stopY = e.clientY;
-                        setTouchPos([touchPos[0], stopY]);
-                    }
-                }}
-            >
+            <div className="x-items h-screen content-center">
                 {items.map((x, idx) => {
                     let fontFamily = "FetteUnzFraktur";
                     let textColor = "#FF4444";
@@ -393,14 +382,12 @@ export default ({
                     return (
                         <div
                             key={x.vendor}
-                            className={`
-                                ${
-                                    currentFocus.vendor === "chromecast" &&
-                                    currentFocus.idx === idx
-                                        ? " glitch-effect-filter"
-                                        : ""
-                                }
-                                animated-filter`}
+                            className={
+                                currentFocus.vendor === "chromecast" &&
+                                currentFocus.idx === idx
+                                    ? " glitch-effect-filter"
+                                    : ""
+                            }
                         >
                             <div
                                 className={`text-3xl left-1/5 fixed w-max ${getKeyFrameAnim(idx, currentFocus.idx, previousFocus.idx)}${idx === currentFocus.idx ? ` selected${currentFocus.idx > previousFocus.idx ? " r" : currentFocus.idx < previousFocus.idx ? " l" : ""}` : ""}${willoopStyles(idx, currentFocus.idx, testItems, items)}`}
