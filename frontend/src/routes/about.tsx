@@ -372,7 +372,7 @@ export default ({
                         onMouseUp={(e) => {
                             setCanTouchMove(false);
                             if (
-                                Math.abs(touchMovePos[0] - touchMovePos[1]) >= 7
+                                Math.abs(touchMovePos[0] - touchMovePos[1]) >= 5
                             ) {
                                 const endTime = Date.now();
                                 setTouchTimes([touchTimes[0], endTime]);
